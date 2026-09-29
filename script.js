@@ -66,12 +66,12 @@
   const steps = document.querySelectorAll(".step-chip");
   const note = document.querySelector("[data-step-note]");
   const notes = {
-    0: ["Still open", "A shortest plan still fits inside the remaining budget."],
-    1: ["Still open", "Whatever went wrong here can still be undone."],
-    2: ["Last chance", "One more bad action closes the task."],
-    3: ["Pivot step", "After this action the goal is unreachable inside the budget that remains."],
-    4: ["Already lost", "Restoring here, one step late, gives the suffix almost nothing back."],
-    5: ["Episode score", "GRPO still paints one number onto every token, including this one."],
+    0: ["Still open", "Right moves the agent beside the box. A shortest plan still fits inside the remaining budget."],
+    1: ["Still open", "Left wobbles back. The box is still free—the failure can still be undone."],
+    2: ["Last chance", "Up at t*−1 lines the agent under the box. One more push will pin it to the wall."],
+    3: ["Pivot step", "Up pins the box against the wall. After this action the remaining budget cannot finish the task."],
+    4: ["Already lost", "Down after the deadlock. Restoring at t*+1 gives the suffix almost nothing back."],
+    5: ["Terminal step T", "GRPO still paints one episode-level advantage onto every token, including this one."],
   };
   steps.forEach((chip) => {
     chip.addEventListener("click", () => {
