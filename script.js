@@ -63,7 +63,36 @@
     reveals.forEach((node) => node.classList.add("is-visible"));
   }
 
-  // Step chips removed from the Teaser (now an HTML5 video). Keep diagnosis note intact.
+  // Teaser HTML5 video: ensure muted autoplay across browsers.
+  document.querySelectorAll("video.lab-video").forEach((video) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    const tryPlay = () => {
+      const p = video.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {
+          // Retry once media is ready / tab visible.
+          const retry = () => {
+            video.muted = true;
+            video.play().catch(() => {});
+          };
+          video.addEventListener("canplay", retry, { once: true });
+          document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) retry();
+          }, { once: true });
+        });
+      }
+    };
+
+    if (video.readyState >= 2) tryPlay();
+    else video.addEventListener("loadeddata", tryPlay, { once: true });
+    tryPlay();
+  });
 
   document.querySelectorAll("[data-switch]").forEach((group) => {
     const name = group.dataset.switch;
