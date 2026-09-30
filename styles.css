@@ -1095,15 +1095,6 @@ details ul { margin: 0 0 12px; padding-left: 1.1em; }
 }
 .fig-badge--silence i { background: var(--accent); }
 .fig-badge--coarse i { background: var(--blue); }
-.fig-badge--callout {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
-  background: var(--accent-wash);
-  color: var(--accent);
-}
-.fig-badge--callout strong {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
 .credit-figure .figure-frame { padding: 6px; }
 .pull strong { font-weight: 650; color: var(--ink); }
 
