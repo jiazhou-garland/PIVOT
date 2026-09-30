@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=29">
+  <link rel="stylesheet" href="styles.css?v=30">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -101,74 +101,36 @@
         </div>
       </div>
 
-      <div class="lab reveal" aria-label="Schematic of a failed rollout and its pivot step">
+      <div class="lab reveal" aria-label="Teaser animation of a failed rollout and its pivot step">
         <div class="lab-header">
           <span>Teaser</span>
           <span class="live-dot"><i></i> Step view</span>
         </div>
-        <div class="step-track" role="group" aria-label="Trajectory steps">
-          <button class="step-chip" type="button" data-step="0" aria-pressed="false">
-            <img src="figures/hero_traj/step_0.png?v=3" alt="Sokoban observation at t = 0">
-            <b>t = 0</b><span>Right</span>
-          </button>
-          <button class="step-chip" type="button" data-step="1" aria-pressed="false">
-            <img src="figures/hero_traj/step_1.png?v=3" alt="Sokoban observation at t = 1">
-            <b>t = 1</b><span>Left</span>
-          </button>
-          <span class="step-ellipsis" aria-hidden="true">…</span>
-          <button class="step-chip" type="button" data-step="2" aria-pressed="false">
-            <img src="figures/hero_traj/step_4.png?v=3" alt="Sokoban observation at t-star minus 1">
-            <b>t*−1</b><span>Up</span>
-          </button>
-          <button class="step-chip is-pivot is-current" type="button" data-step="3" aria-pressed="true">
-            <img src="figures/hero_traj/step_5.png?v=3" alt="Sokoban observation at the pivot step">
-            <b>t*</b><span>Up</span>
-          </button>
-          <button class="step-chip is-dead" type="button" data-step="4" aria-pressed="false">
-            <img src="figures/hero_traj/step_6.png?v=3" alt="Sokoban observation at t-star plus 1">
-            <b>t*+1</b><span>Down</span>
-          </button>
-          <span class="step-ellipsis" aria-hidden="true">…</span>
-          <button class="step-chip is-dead" type="button" data-step="5" aria-pressed="false">
-            <img src="figures/hero_traj/step_8.png?v=3" alt="Sokoban observation at the final step T">
-            <b>T</b><span>Right</span>
-          </button>
-        </div>
-        <div class="meters" aria-hidden="true">
-          <div class="meter-row">
-            <em>Feasible</em>
-            <div class="bars-mini">
-              <i class="ok" style="--h:100%" title="1"></i>
-              <i class="ok" style="--h:100%" title="1"></i>
-              <span class="bar-gap">…</span>
-              <i class="ok" style="--h:100%" title="1"></i>
-              <i class="low" style="--h:16%" title="0"></i>
-              <i class="low" style="--h:16%" title="0"></i>
-              <span class="bar-gap">…</span>
-              <i class="low" style="--h:16%" title="0"></i>
-            </div>
-          </div>
-          <div class="credit-compare">
-            <p class="credit-title">Credit assignment comparison</p>
-            <div class="credit-row">
-              <em>Vanilla GRPO</em>
-              <div class="credit-flat">Flat / Zero-gradient silence <span>(all-failed rollouts)</span></div>
-            </div>
-            <div class="credit-row">
-              <em>PIVOT (Ours)</em>
-              <div class="bars-mini pivot-credit">
-                <i class="zero" style="--h:10%"></i>
-                <i class="zero" style="--h:10%"></i>
-                <span class="bar-gap">…</span>
-                <i class="zero" style="--h:10%"></i>
-                <i class="peak" style="--h:100%"></i>
-                <i class="zero" style="--h:10%"></i>
-                <span class="bar-gap">…</span>
-                <i class="zero" style="--h:10%"></i>
-              </div>
-            </div>
-            <p class="credit-caption"><span class="peak-mark">★</span> Peak OPD signal at <em>t*</em></p>
-          </div>
+        <!--
+          Static video assets for the Teaser (place files here before publish):
+            blog/static/videos/teaser_animation.mp4
+            blog/static/videos/teaser_animation.webm
+            blog/static/images/teaser_poster.png
+          On the GitHub Pages repo (PIVOT), the same paths are relative to index.html:
+            static/videos/teaser_animation.mp4
+            static/videos/teaser_animation.webm
+            static/images/teaser_poster.png
+        -->
+        <div class="lab-video-frame">
+          <video
+            class="lab-video"
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="auto"
+            poster="static/images/teaser_poster.png"
+            aria-label="Animated teaser of the pivot-step trajectory"
+          >
+            <source src="static/videos/teaser_animation.mp4" type="video/mp4">
+            <source src="static/videos/teaser_animation.webm" type="video/webm">
+            Your browser does not support HTML5 video. See the project page for the static schematic.
+          </video>
         </div>
         <div class="lab-note">
           <svg viewBox="0 0 32 20" aria-hidden="true"><path d="M2 4c9 0 7 12 18 12h9M25 12l4 4-4 4"></path></svg>
@@ -788,6 +750,6 @@
     <span>PIVOT · Pivot-Aware Internalized Visual On-Policy Training</span>
     <a href="#top">Back to top</a>
   </footer>
-  <script src="script.js?v=9"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>

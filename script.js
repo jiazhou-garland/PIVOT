@@ -63,26 +63,7 @@
     reveals.forEach((node) => node.classList.add("is-visible"));
   }
 
-  const steps = document.querySelectorAll(".step-chip");
-  const note = document.querySelector("[data-step-note]");
-  const notes = {
-    0: ["Still recoverable", "Feasible = 1. Vanilla GRPO stays flat; PIVOT has not yet peaked."],
-    1: ["Still recoverable", "Feasible = 1. The box is free—the failure can still be undone."],
-    2: ["Last chance", "Feasible = 1 at t*−1. One more push will pin the box to the wall."],
-    3: ["Pivot step diagnosis", "“Up” pins the box against the wall. PIVOT extracts a 3-panel visual context [t*−1, t*, t*+1] to update policy weights without simulator resets."],
-    4: ["Already unrecoverable", "Feasible = 0 after t*. Restoring one step late gives almost nothing back."],
-    5: ["Terminal step T", "Vanilla GRPO still assigns one flat advantage; PIVOT already concentrated credit at t*."],
-  };
-  steps.forEach((chip) => {
-    chip.addEventListener("click", () => {
-      steps.forEach((other) => {
-        other.classList.toggle("is-current", other === chip);
-        other.setAttribute("aria-pressed", other === chip ? "true" : "false");
-      });
-      const pair = notes[chip.dataset.step];
-      if (note && pair) note.innerHTML = `<strong>${pair[0]}.</strong> ${pair[1]}`;
-    });
-  });
+  // Step chips removed from the Teaser (now an HTML5 video). Keep diagnosis note intact.
 
   document.querySelectorAll("[data-switch]").forEach((group) => {
     const name = group.dataset.switch;
