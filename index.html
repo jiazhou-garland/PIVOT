@@ -70,7 +70,7 @@
         </aside>
         <div class="hero-solution">
           <p class="hero-kicker">Solution: PIVOT</p>
-          <p class="hero-dek">PIVOT bakes visual pivot localization directly into model weights via self-distillation—delivering hindsight-level recovery.</p>
+          <p class="hero-dek">PIVOT bakes visual pivot localization directly into model weights via self-distillation, delivering hindsight-level recovery.</p>
           <ul class="hero-points">
             <li><strong>No Simulator Reset:</strong> Replaces physical env-rewinds with internalized visual diagnosis.</li>
             <li><strong>Zero Test-Time Overhead:</strong> Achieves <strong>0.90</strong> (<strong>+8%</strong>) on Qwen2.5-VL-3B and <strong>0.92</strong> (<strong>+12%</strong>) on Qwen3-VL-2B across five VLM agent tasks with <strong>0</strong> extra prompt latency.</li>
@@ -131,7 +131,7 @@
         </div>
         <div class="lab-note">
           <svg viewBox="0 0 32 20" aria-hidden="true"><path d="M2 4c9 0 7 12 18 12h9M25 12l4 4-4 4"></path></svg>
-          <p data-step-note><strong>Pivot step.</strong> Across Sokoban, FrozenLake, Navigation, and PrimitiveSkill, the first unrecoverable action—deadlock, blocked path, or wrong target—ends the feasible region.</p>
+          <p data-step-note><strong>Pivot step.</strong> Across Sokoban, FrozenLake, Navigation, and PrimitiveSkill, the first unrecoverable action (deadlock, blocked path, or wrong target) ends the feasible region.</p>
         </div>
         <div class="lab-footer">
           <span><i class="legend-dot"></i> Still recoverable</span>
@@ -173,16 +173,16 @@
 
       <article>
         <section class="section" id="puzzle">
-          <p class="story-hook">We thought training agents to self-correct with GRPO would be straightforward—until we hit a strange failure mode.</p>
-          <p class="section-kicker">01 — The GRPO paradox</p>
+          <p class="story-hook">We thought training agents to self-correct with GRPO would be straightforward, until we hit a strange failure mode.</p>
+          <p class="section-kicker">01 · The GRPO paradox</p>
           <h2>Why can’t episode-level RL name the pivot step?</h2>
-          <p class="lede">GRPO ranks whole trajectories by one scalar return. Multi-turn agents usually fail at a single unrecoverable turn—and that turn never shows up in the gradient.</p>
+          <p class="lede">GRPO ranks whole trajectories by one scalar return. Multi-turn agents usually fail at a single unrecoverable turn, and that turn never shows up in the gradient.</p>
 
           <div class="defect-grid" role="list">
             <article class="defect-card defect-card--silence" role="listitem">
               <p class="defect-kicker"><i class="defect-dot silence" aria-hidden="true"></i> Phenomenon A · σ = 0</p>
               <h3>Everyone fails → the model plays dead</h3>
-              <p class="defect-issue">Sample eight rollouts; if every return matches, group variance is zero. Advantage vanishes—<strong>zero-gradient silence</strong>—so the policy learns nothing, even when the failures are different mistakes.</p>
+              <p class="defect-issue">Sample eight rollouts; if every return matches, group variance is zero. Advantage vanishes into <strong>zero-gradient silence</strong>, so the policy learns nothing, even when the failures are different mistakes.</p>
               <dl class="defect-stats">
                 <div>
                   <dt>48.3%</dt>
@@ -199,7 +199,7 @@
             <article class="defect-card defect-card--coarse" role="listitem">
               <p class="defect-kicker"><i class="defect-dot coarse" aria-hidden="true"></i> Phenomenon B · σ &gt; 0</p>
               <h3>A signal arrives → still a blunt instrument</h3>
-              <p class="defect-issue">Even with a −0.1 step penalty (FrozenLake / Navigation), credit is painted onto <strong>every action token</strong>. The update punishes episode length—it never isolates the pivot step <em>t*</em>.</p>
+              <p class="defect-issue">Even with a −0.1 step penalty (FrozenLake / Navigation), credit is painted onto <strong>every action token</strong>. The update punishes episode length and never isolates the pivot step <em>t*</em>.</p>
               <dl class="defect-stats">
                 <div>
                   <dt>σ &gt; 0</dt>
@@ -210,7 +210,7 @@
                   <dd>Never named</dd>
                 </div>
               </dl>
-              <p class="defect-meta">One scalar for every token—no surgical cut at t*</p>
+              <p class="defect-meta">One scalar for every token, with no surgical cut at t*</p>
             </article>
           </div>
 
@@ -223,17 +223,17 @@
             <div class="figure-frame">
               <img src="figures/fig_sec2_motivation_a.png?v=3" alt="Failed-rollout return distributions. Red marks zero-gradient silence (σ=0); blue marks coarse episode-level credit (σ&gt;0).">
             </div>
-            <figcaption>Failed return distributions across benchmarks. Red is zero-gradient silence (σ=0)—no optimization signal. Blue still only scores the whole episode.</figcaption>
+            <figcaption>Failed return distributions across benchmarks. Red is zero-gradient silence (σ=0) and carries no optimization signal. Blue still only scores the whole episode.</figcaption>
           </figure>
 
           <blockquote class="pull">
             <span>Cliffhanger</span>
-            So how do we hand the model a scalpel—and cut precisely into the pivot step <em>t*</em>?
+            So how do we hand the model a scalpel that cuts precisely into the pivot step <em>t*</em>?
           </blockquote>
         </section>
 
         <section class="section" id="probe">
-          <p class="section-kicker">02 — Rollback probe</p>
+          <p class="section-kicker">02 · Rollback probe</p>
           <h2>Physical state rollback dominates skill hints</h2>
           <p class="lede">OPD supplies token-level targets from a teacher; OPSD relaxes that with hindsight. On multi-turn VLM agents, a counterfactual rollback probe isolates what actually drives the gain.</p>
           <p>A domain feasibility certificate Feas(<em>s</em>, <em>k</em>) ∈ {0,1} says whether state <em>s</em> can still reach the goal in <em>k</em> steps. The pivot step <em>t*</em> is the first action that leaves an infeasible remaining budget; if the trajectory never becomes infeasible, <em>t*</em> is <em>T</em>−1.</p>
@@ -253,8 +253,8 @@
           <div class="analysis-row">
             <div class="analysis-copy">
               <h4>Suffix-return lift ΔR</h4>
-              <p>No-hint rollback at <em>s</em><sub>t*</sub> boosts suffix returns ΔR on every task (3.3%–56.6%). Resetting one step later (<em>t*+1</em>) sharply drops ΔR on four tasks—Sokoban 3.3%→0.9%, PrimitiveSkill 17.7%→8.3%, FrozenLake 18.2%→8.1%—so recovery hinges on temporal precision. Navigation barely moves (56.6%→53.6%).</p>
-              <p>Skill hints add only a residual: 3B-self differs from no-hint by ≤2.6 points; 8B-teacher advances 3B-self by 0.3–3.5. On Navigation, no-hint at <em>t*</em> is already the best of the four arms.</p>
+              <p>No-hint rollback at <em>s</em><sub>t*</sub> boosts suffix returns ΔR on every task (3.3% to 56.6%). Resetting one step later (<em>t*+1</em>) sharply drops ΔR on four tasks (Sokoban 3.3%→0.9%, PrimitiveSkill 17.7%→8.3%, FrozenLake 18.2%→8.1%), so recovery hinges on temporal precision. Navigation barely moves (56.6%→53.6%).</p>
+              <p>Skill hints add only a residual: 3B-self differs from no-hint by ≤2.6 points; 8B-teacher advances 3B-self by 0.3 to 3.5. On Navigation, no-hint at <em>t*</em> is already the best of the four arms.</p>
             </div>
             <figure class="figure analysis-figure">
               <div class="figure-frame">
@@ -267,7 +267,7 @@
           <div class="analysis-row">
             <div class="analysis-copy">
               <h4>Zero-variance groups</h4>
-              <p>The same no-hint restore at <em>t*</em> also cuts zero-variance group rates where GRPO advantages vanish—Sokoban 48.3%→41.7%, PrimitiveSkill 16.5%→3.8%. State rollback at the pivot reopens a usable gradient and is the primary share of the OPD/OPSD gain.</p>
+              <p>The same no-hint restore at <em>t*</em> also cuts zero-variance group rates where GRPO advantages vanish (Sokoban 48.3%→41.7%, PrimitiveSkill 16.5%→3.8%). State rollback at the pivot reopens a usable gradient and is the primary share of the OPD/OPSD gain.</p>
             </div>
             <figure class="figure analysis-figure">
               <div class="figure-frame">
@@ -288,28 +288,28 @@
               <span>i</span>
               <div>
                 <strong>State rollback drives recovery</strong>
-                <p>No-hint restore at <em>t*</em> lifts ΔR on every task (3.3%–56.6%) and cuts zero-variance groups (Sokoban 48.3%→41.7%, PrimitiveSkill 16.5%→3.8%). Physical restoration at the pivot is the core mechanism of OPD/OPSD here.</p>
+                <p>No-hint restore at <em>t*</em> lifts ΔR on every task (3.3% to 56.6%) and cuts zero-variance groups (Sokoban 48.3%→41.7%, PrimitiveSkill 16.5%→3.8%). Physical restoration at the pivot is the core mechanism of OPD/OPSD here.</p>
               </div>
             </li>
             <li>
               <span>ii</span>
               <div>
                 <strong>Skill hints offer marginal value</strong>
-                <p>Whether self-generated (3B-self) or teacher-provided (8B-teacher), skill text yields negligible gains beyond pure state rollback: ≤2.6 points vs no-hint, and 0.3–3.5 between 8B and 3B.</p>
+                <p>Whether self-generated (3B-self) or teacher-provided (8B-teacher), skill text yields negligible gains beyond pure state rollback: ≤2.6 points vs no-hint, and 0.3 to 3.5 between 8B and 3B.</p>
               </div>
             </li>
             <li>
               <span>iii</span>
               <div>
                 <strong>Temporal precision is critical</strong>
-                <p>Delaying rollback by a single step (<em>t*+1</em>) sharply degrades recovery (Sokoban 3.3%→0.9%, PrimitiveSkill 17.7%→8.3%). Hitting the pivot—not merely rewinding nearby—is what matters.</p>
+                <p>Delaying rollback by a single step (<em>t*+1</em>) sharply degrades recovery (Sokoban 3.3%→0.9%, PrimitiveSkill 17.7%→8.3%). Hitting the pivot, not merely rewinding nearby, is what matters.</p>
               </div>
             </li>
           </ol>
         </section>
 
         <section class="section" id="motivation">
-          <p class="section-kicker">03 — The motivation</p>
+          <p class="section-kicker">03 · The motivation</p>
           <h2>From physical rollbacks to parameter updates</h2>
           <p class="lede">The probe exposes a rollback paradox: recovery lives in restoring the state at <em>t*</em>, yet an explicit rewind is too expensive for online RL and impossible in non-rewindable environments.</p>
           <blockquote class="pull">
@@ -343,9 +343,9 @@
         </section>
 
         <section class="section" id="method">
-          <p class="section-kicker">04 — The recipe</p>
+          <p class="section-kicker">04 · The recipe</p>
           <h2>Three roles, one policy π<sub>θ</sub></h2>
-          <p class="lede">PIVOT consolidates Student, Analyzer, and Teacher in a single VLM. It internalizes pivot localization and visual state restoration into token-level updates—no environment rollback in training, no skill hint at test time.</p>
+          <p class="lede">PIVOT consolidates Student, Analyzer, and Teacher in a single VLM. It internalizes pivot localization and visual state restoration into token-level updates, with no environment rollback in training and no skill hint at test time.</p>
           <figure class="figure">
             <div class="figure-frame">
               <img src="figures/Framework.png" alt="PIVOT architecture: Stage I analyzer cold-start, Stage II three unified roles, and zero-overhead inference.">
@@ -361,7 +361,7 @@
                   <b>I</b>
                   <div>
                     <h3>Visual diagnostic cold-start</h3>
-                    <p>Failed on-policy rollouts become a collage <em>C</em>(τ)=Grid(<em>o</em><sub>0</sub>,…,<em>o</em><sub>T−1</sub>) plus the action sequence. SFT maps that input to a diagnostic triplet (<em>t*</em>, <em>m*</em>, <em>r*</em>). No latent state is shown. About 960–1.7k accepted trajectories per environment, three epochs, then θ←θ<sub>sft</sub>.</p>
+                    <p>Failed on-policy rollouts become a collage <em>C</em>(τ)=Grid(<em>o</em><sub>0</sub>,…,<em>o</em><sub>T−1</sub>) plus the action sequence. SFT maps that input to a diagnostic triplet (<em>t*</em>, <em>m*</em>, <em>r*</em>). No latent state is shown. About 960 to 1.7k accepted trajectories per environment, three epochs, then θ←θ<sub>sft</sub>.</p>
                   </div>
                 </article>
                 <article class="step-card">
@@ -416,7 +416,7 @@
         </section>
 
         <section class="section" id="credit">
-          <p class="section-kicker">05 — How credit moves</p>
+          <p class="section-kicker">05 · How credit moves</p>
           <h2>The panel is the internalized rollback</h2>
           <p class="lede">The Teacher never resets the simulator. A three-frame neighborhood <em>P</em><sub>t̂</sub> = [<em>o</em><sub>t̂−1</sub>, <em>o</em><sub>t̂</sub>, <em>o</em><sub>t̂+1</sub>] around the predicted pivot is enough to re-score the original failed tokens.</p>
           <div class="seg" data-switch="panel" role="group" aria-label="Visual panels">
@@ -460,7 +460,7 @@
           <h3>Analyzer SFT examples</h3>
           <div class="analysis-row">
             <div class="analysis-copy">
-              <p>Stage I maps (<em>q</em>, <em>C</em>(τ), <em>a</em><sub>0:T−1</sub>) → (<em>t*</em>, <em>m*</em>, <em>r*</em>) on failed rollouts. Each accepted example pairs a visual collage and compact action log with JSON supervision; the highlighted log line is the pivot. Input uses only observable history—no environment state. Splits are 90/10; the same recipe is used on 2B.</p>
+              <p>Stage I maps (<em>q</em>, <em>C</em>(τ), <em>a</em><sub>0:T−1</sub>) → (<em>t*</em>, <em>m*</em>, <em>r*</em>) on failed rollouts. Each accepted example pairs a visual collage and compact action log with JSON supervision; the highlighted log line is the pivot. Input uses only observable history, with no environment state. Splits are 90/10; the same recipe is used on 2B.</p>
             </div>
             <div class="table-wrap ablation-inline">
               <table class="ablation-table">
@@ -529,7 +529,7 @@
         </section>
 
         <section class="section" id="evidence">
-          <p class="section-kicker">06 — Evidence</p>
+          <p class="section-kicker">06 · Evidence</p>
           <h2>SOTA without extra machinery at test time</h2>
           <p class="lede">Five VAGEN tasks spanning cognitive grid puzzles, 3D embodied control and navigation, and generative SVG. Success rate everywhere except SVG, which uses a DINO and DreamSim composite. Full PIVOT is the M+P+R stack.</p>
           <div class="metrics" aria-label="Headline results">
@@ -680,7 +680,7 @@
           <div class="analysis-row">
             <div class="analysis-copy">
               <p>Relative to Vanilla-GRPO (0.78 Sokoban / 0.81 Navigation), a panel alone (P) or a failure mode alone (M) each reaches about 0.86. Combining them (M+P) reaches 0.90 / 0.89, and the full stack M+P+R peaks at 0.95 / 0.90.</p>
-              <p>Substituting the localized step with a uniform random index (M+P-Random+R) falls to 0.75 / 0.80—below Vanilla-GRPO. Arbitrary visual context is harmful noise; precise pivot localization is indispensable.</p>
+              <p>Substituting the localized step with a uniform random index (M+P-Random+R) falls to 0.75 / 0.80, below Vanilla-GRPO. Arbitrary visual context is harmful noise; precise pivot localization is indispensable.</p>
             </div>
             <div class="ablation-card">
               <table class="ablation-table">
@@ -744,7 +744,7 @@
           <div class="analysis-row">
             <div class="analysis-copy">
               <h4>Training efficiency</h4>
-              <p>Despite the multi-role diagnostic branch, PIVOT’s per-update latency on Sokoban is 95s, slightly under Vanilla-GRPO at 102s: unviable actions are suppressed early, rollouts shorten, and sampling—the main VLM RL bottleneck—gets cheaper. An external frozen Qwen3-VL-8B teacher instead costs 373s per step (3.9×). At test time, stripping diagnostic branches leaves an unprivileged student with zero parameter or inference overhead.</p>
+              <p>Despite the multi-role diagnostic branch, PIVOT’s per-update latency on Sokoban is 95s, slightly under Vanilla-GRPO at 102s: unviable actions are suppressed early, rollouts shorten, and sampling, the main VLM RL bottleneck, gets cheaper. An external frozen Qwen3-VL-8B teacher instead costs 373s per step (3.9×). At test time, stripping diagnostic branches leaves an unprivileged student with zero parameter or inference overhead.</p>
             </div>
             <figure class="figure analysis-figure">
               <div class="figure-frame">
