@@ -393,7 +393,7 @@ html[data-theme="dark"] .button-primary { color: #211411; }
 }
 
 .lab-video-frame {
-  margin: 16px 0 0;
+  margin: 10px 0 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 18px;
