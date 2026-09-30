@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=28">
+  <link rel="stylesheet" href="styles.css?v=29">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -103,7 +103,7 @@
 
       <div class="lab reveal" aria-label="Schematic of a failed rollout and its pivot step">
         <div class="lab-header">
-          <span>Schematic</span>
+          <span>Teaser</span>
           <span class="live-dot"><i></i> Step view</span>
         </div>
         <div class="step-track" role="group" aria-label="Trajectory steps">
@@ -138,24 +138,41 @@
           <div class="meter-row">
             <em>Feasible</em>
             <div class="bars-mini">
-              <i style="--h:88%"></i><i style="--h:76%"></i><span class="bar-gap">…</span>
-              <i style="--h:64%"></i>
-              <i class="low" style="--h:18%"></i><i class="low" style="--h:10%"></i>
-              <span class="bar-gap">…</span><i class="low" style="--h:8%"></i>
+              <i class="ok" style="--h:100%" title="1"></i>
+              <i class="ok" style="--h:100%" title="1"></i>
+              <span class="bar-gap">…</span>
+              <i class="ok" style="--h:100%" title="1"></i>
+              <i class="low" style="--h:16%" title="0"></i>
+              <i class="low" style="--h:16%" title="0"></i>
+              <span class="bar-gap">…</span>
+              <i class="low" style="--h:16%" title="0"></i>
             </div>
           </div>
-          <div class="meter-row">
-            <em>GRPO credit</em>
-            <div class="bars-mini entropy">
-              <i style="--h:46%"></i><i style="--h:46%"></i><span class="bar-gap">…</span>
-              <i style="--h:46%"></i><i style="--h:46%"></i><i style="--h:46%"></i>
-              <span class="bar-gap">…</span><i style="--h:46%"></i>
+          <div class="credit-compare">
+            <p class="credit-title">Credit assignment comparison</p>
+            <div class="credit-row">
+              <em>Vanilla GRPO</em>
+              <div class="credit-flat">Flat / Zero-gradient silence <span>(all-failed rollouts)</span></div>
             </div>
+            <div class="credit-row">
+              <em>PIVOT (Ours)</em>
+              <div class="bars-mini pivot-credit">
+                <i class="zero" style="--h:10%"></i>
+                <i class="zero" style="--h:10%"></i>
+                <span class="bar-gap">…</span>
+                <i class="zero" style="--h:10%"></i>
+                <i class="peak" style="--h:100%"></i>
+                <i class="zero" style="--h:10%"></i>
+                <span class="bar-gap">…</span>
+                <i class="zero" style="--h:10%"></i>
+              </div>
+            </div>
+            <p class="credit-caption"><span class="peak-mark">★</span> Peak OPD signal at <em>t*</em></p>
           </div>
         </div>
         <div class="lab-note">
           <svg viewBox="0 0 32 20" aria-hidden="true"><path d="M2 4c9 0 7 12 18 12h9M25 12l4 4-4 4"></path></svg>
-          <p data-step-note><strong>Pivot step.</strong> Up pins the box against the wall. After this action the remaining budget cannot finish the task.</p>
+          <p data-step-note><strong>Pivot step diagnosis.</strong> “Up” pins the box against the wall. PIVOT extracts a 3-panel visual context [<em>t*−1</em>, <em>t*</em>, <em>t*+1</em>] to update policy weights without simulator resets.</p>
         </div>
         <div class="lab-footer">
           <span><i class="legend-dot"></i> Still recoverable</span>
@@ -771,6 +788,6 @@
     <span>PIVOT · Pivot-Aware Internalized Visual On-Policy Training</span>
     <a href="#top">Back to top</a>
   </footer>
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>

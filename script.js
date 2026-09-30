@@ -66,12 +66,12 @@
   const steps = document.querySelectorAll(".step-chip");
   const note = document.querySelector("[data-step-note]");
   const notes = {
-    0: ["Still open", "Right moves the agent beside the box. A shortest plan still fits inside the remaining budget."],
-    1: ["Still open", "Left wobbles back. The box is still free—the failure can still be undone."],
-    2: ["Last chance", "Up at t*−1 lines the agent under the box. One more push will pin it to the wall."],
-    3: ["Pivot step", "Up pins the box against the wall. After this action the remaining budget cannot finish the task."],
-    4: ["Already lost", "Down after the deadlock. Restoring at t*+1 gives the suffix almost nothing back."],
-    5: ["Terminal step T", "GRPO still paints one episode-level advantage onto every token, including this one."],
+    0: ["Still recoverable", "Feasible = 1. Vanilla GRPO stays flat; PIVOT has not yet peaked."],
+    1: ["Still recoverable", "Feasible = 1. The box is free—the failure can still be undone."],
+    2: ["Last chance", "Feasible = 1 at t*−1. One more push will pin the box to the wall."],
+    3: ["Pivot step diagnosis", "“Up” pins the box against the wall. PIVOT extracts a 3-panel visual context [t*−1, t*, t*+1] to update policy weights without simulator resets."],
+    4: ["Already unrecoverable", "Feasible = 0 after t*. Restoring one step late gives almost nothing back."],
+    5: ["Terminal step T", "Vanilla GRPO still assigns one flat advantage; PIVOT already concentrated credit at t*."],
   };
   steps.forEach((chip) => {
     chip.addEventListener("click", () => {
