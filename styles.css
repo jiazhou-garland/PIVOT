@@ -252,6 +252,11 @@ h1 em {
   color: var(--accent);
 }
 .hero-badge.is-live:hover { color: var(--accent-hover); }
+.hero-badge.is-soon {
+  border-style: dashed;
+  color: var(--faint);
+  cursor: default;
+}
 
 .hero-highlight {
   max-width: 40rem;
