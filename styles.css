@@ -276,6 +276,8 @@ h1 em {
   font-size: 17.5px;
   line-height: 1.5;
 }
+.hero-highlight p { margin: 0; }
+.hero-highlight p + p { margin-top: 10px; }
 .hero-highlight strong { font-weight: 650; color: var(--accent); }
 .hero-highlight em { font-style: italic; }
 
