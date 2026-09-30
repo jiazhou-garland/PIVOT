@@ -70,16 +70,6 @@
           <p>Methods leveraging hindsight feedback, such as On-Policy Distillation (OPD) and On-Policy Self-Distillation (OPSD), seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
           <p><strong>PIVOT</strong> answers that rollback paradox: one VLM plays Analyzer, Teacher, and Student in training, then ships as a plain Student with <strong>0.90 (+8%)</strong> on Qwen2.5-VL-3B across five visual agent tasks, and zero extra test-time cost.</p>
         </aside>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#puzzle">
-            Read the story
-            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v11M4.5 9.5 9 14l4.5-4.5"></path></svg>
-          </a>
-          <a class="button button-secondary" href="#evidence">
-            See the evidence
-            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M9.5 4.5 14 9l-4.5 4.5"></path></svg>
-          </a>
-        </div>
       </div>
 
       <div class="lab reveal" aria-label="Teaser animation of a failed rollout and its pivot step">
