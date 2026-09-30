@@ -175,22 +175,59 @@
         <section class="section" id="puzzle">
           <p class="section-kicker">01 — Credit assignment</p>
           <h2>Episode-level credit cannot see the fatal step</h2>
-          <p class="lede">GRPO ranks whole trajectories by scalar return. Multi-turn VLM agents fail at a single unrecoverable turn.</p>
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <p>A VLM agent acts in a POMDP loop: observation, action, next observation. GRPO samples a group of eight rollouts per prompt and standardizes their returns into one advantage <em>A</em><sup>rl</sup>. That scalar is assigned uniformly to every action token in the trajectory, so credit never isolates which turn first rendered the task unrecoverable.</p>
-              <p>When group returns match, σ=0 and the advantage vanishes: <em>zero-gradient silence</em>. On untrained Qwen2.5-VL-3B this covers 48.3% of Sokoban groups and 16.5% of PrimitiveSkill groups (baseline success 17.8% and 8.9%), even though the failures inside a group are not the same mistake. FrozenLake and Navigation have 0% σ=0 because a −0.1 per-step penalty differentiates length—the −0.1 ladder in the figure—but σ&gt;0 still only punishes episode length. SVG is similar (0.9% σ=0): credit stays episode-level, not step-level.</p>
-            </div>
-            <figure class="figure analysis-figure">
-              <div class="figure-frame">
-                <img src="figures/fig_sec2_motivation_a.png?v=2" alt="Failed-rollout returns for the untrained 3B baseline across five tasks. Red marks zero-variance groups; blue marks groups with return variance.">
-              </div>
-              <figcaption>Base-policy failed returns <em>R</em>(τ). Red is σ=0; blue is σ&gt;0. Marker size scales with trajectory frequency; percentages are the σ=0 share.</figcaption>
-            </figure>
+          <p class="lede">GRPO ranks whole trajectories by a single scalar return, failing to isolate the first unrecoverable turn.</p>
+
+          <div class="defect-grid" role="list">
+            <article class="defect-card defect-card--silence" role="listitem">
+              <p class="defect-kicker"><i class="defect-dot silence" aria-hidden="true"></i> Zero-gradient silence · σ = 0</p>
+              <h3>Advantage vanishes</h3>
+              <p class="defect-issue">When all eight sampled rollouts fail with the same return, group variance is zero. The advantage is zero, so the policy gets <strong>no gradient update</strong>.</p>
+              <dl class="defect-stats">
+                <div>
+                  <dt>48.3%</dt>
+                  <dd>Sokoban groups frozen</dd>
+                </div>
+                <div>
+                  <dt>16.5%</dt>
+                  <dd>PrimitiveSkill groups frozen</dd>
+                </div>
+              </dl>
+              <p class="defect-meta">Untrained Qwen2.5-VL-3B · failures inside a group need not be the same mistake</p>
+            </article>
+
+            <article class="defect-card defect-card--coarse" role="listitem">
+              <p class="defect-kicker"><i class="defect-dot coarse" aria-hidden="true"></i> Coarse episode-level credit · σ &gt; 0</p>
+              <h3>Length, not the fatal step</h3>
+              <p class="defect-issue">Even with a −0.1 step penalty (FrozenLake / Navigation), the scalar advantage is still painted onto <strong>every action token</strong>.</p>
+              <dl class="defect-stats">
+                <div>
+                  <dt>σ &gt; 0</dt>
+                  <dd>Still episode-level</dd>
+                </div>
+                <div>
+                  <dt>t*</dt>
+                  <dd>Never isolated</dd>
+                </div>
+              </dl>
+              <p class="defect-meta">Punishes trajectory length—not the first unrecoverable action</p>
+            </article>
           </div>
+
+          <figure class="figure credit-figure">
+            <div class="fig-badges" aria-label="Figure legend">
+              <span class="fig-badge fig-badge--silence"><i aria-hidden="true"></i> Red · σ = 0 · zero-gradient silence</span>
+              <span class="fig-badge fig-badge--coarse"><i aria-hidden="true"></i> Blue · σ &gt; 0 · coarse episode penalty</span>
+              <span class="fig-badge fig-badge--callout">Sokoban · <strong>48.3%</strong> frozen</span>
+            </div>
+            <div class="figure-frame">
+              <img src="figures/fig_sec2_motivation_a.png?v=3" alt="Failed-rollout return distributions. Red marks zero-gradient silence (σ=0); blue marks coarse episode-level credit (σ&gt;0). Sokoban shows 48.3% frozen groups.">
+            </div>
+            <figcaption>Failed return distributions across benchmarks. Red is zero-gradient silence (σ=0), where GRPO provides no optimization signal.</figcaption>
+          </figure>
+
           <blockquote class="pull">
             <span>Takeaway</span>
-            Failed GRPO trajectories suffer from zero-gradient silence or coarse episode-level credit. Neither case names the first unrecoverable action.
+            Failed GRPO trajectories either suffer from <strong>zero-gradient silence</strong> or <strong>coarse episode-level credit</strong>—neither can locate the first unrecoverable action (<em>t*</em>).
           </blockquote>
         </section>
 
