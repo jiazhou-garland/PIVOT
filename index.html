@@ -58,17 +58,17 @@
   <main id="main">
     <section class="hero" id="top">
       <div class="hero-copy reveal">
-        <p class="eyebrow"><span></span> Pivot-Aware Internalized Visual On-Policy Training</p>
+        <p class="eyebrow"><span></span> PIVOT: Pivot-Aware On-Policy Self-Distillation for VLM Agents</p>
         <h1>Does hindsight <em>really need a hint?</em></h1>
         <div class="hero-badges" aria-label="Links">
           <a class="hero-badge is-live" href="https://arxiv.org/abs/2609.35303" target="_blank" rel="noopener noreferrer">arXiv</a>
           <a class="hero-badge is-live" href="https://github.com/jiazhou-garland/PIVOT">Project page</a>
         </div>
         <aside class="hero-highlight">
-          <p><strong>PIVOT</strong> shows that OPD/OPSD recovery in multi-turn VLM agents comes from <em>physical state rollback</em> at the pivot step <em>t*</em>—not skill prompts. Internalizing visual pivot diagnosis into policy updates reaches <strong>0.92</strong> on Qwen3-VL-2B across five tasks (<strong>+12%</strong>), with <strong>zero</strong> extra test-time compute or prompt latency.</p>
+          <p><strong>TL;DR:</strong> Recovery in multi-turn VLM agents is driven by physical state rollback, not skill prompts. PIVOT internalizes this visual diagnosis into policy updates—achieving <strong>0.92</strong> accuracy (<strong>+12%</strong>) on Qwen3-VL-2B with <strong>zero</strong> test-time overhead.</p>
         </aside>
-        <p class="hero-kicker">Physical restoration dominates skill prompts</p>
-        <p class="hero-dek">Hindsight helps multi-turn VLM agents—but why? Across five benchmarks, most of the OPD/OPSD lift comes from restoring the environment at the <em>pivot step</em>, not from extra skill text. Real worlds rarely rewind. PIVOT writes that localization and restoration into the weights: no simulator reset in training, no hint at test time.</p>
+        <p class="hero-kicker">Why does hindsight work—and how to deploy it?</p>
+        <p class="hero-dek">Hindsight improves multi-turn VLM agents, but real-world environments rarely rewind. We discover that performance gains come almost entirely from restoring the state at the <em>pivot step</em>, rather than text hints. PIVOT bakes this pivot localization and state restoration directly into the model weights—delivering hindsight-level recovery with no simulator resets and no test-time prompts.</p>
         <div class="byline">
           <span>Jiazhou Zhou</span>
           <i aria-hidden="true">·</i>
