@@ -978,6 +978,19 @@ summary {
 details p, details li { font-size: 17px; }
 details ul { margin: 0 0 12px; padding-left: 1.1em; }
 
+.figure-fold {
+  margin-top: 26px;
+  border-top: 0;
+}
+.figure-fold > summary {
+  padding: 0;
+  color: var(--faint);
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.figure-fold .credit-figure { margin-top: 14px; }
+
 .pair {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
