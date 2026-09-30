@@ -1271,8 +1271,51 @@ details ul { margin: 0 0 12px; padding-left: 1.1em; }
   padding-bottom: 6px;
 }
 
-.close, .citation { width: min(760px, var(--page)); margin: 64px auto 0; }
+.close, .citation { width: min(860px, var(--page)); margin: 64px auto 0; }
 .close h2 { font-size: clamp(32px, 4vw, 46px); }
+.closing-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 28px;
+}
+.closing-card {
+  margin: 0;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.closing-card:nth-child(1) {
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--line));
+  background: linear-gradient(180deg, var(--accent-wash), var(--surface) 48%);
+}
+.closing-card:nth-child(2) {
+  border-color: color-mix(in srgb, var(--blue) 24%, var(--line));
+  background: linear-gradient(180deg, var(--blue-soft), var(--surface) 48%);
+}
+.closing-card:nth-child(3) {
+  border-color: color-mix(in srgb, var(--green) 24%, var(--line));
+  background: linear-gradient(180deg, var(--green-soft), var(--surface) 48%);
+}
+.closing-kicker {
+  margin: 0;
+  color: var(--muted);
+  font: 650 12px/1 var(--sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.closing-card h3 {
+  margin: 10px 0 0;
+  font-size: 22px;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+}
+.closing-card p {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font: 400 17px/1.5 var(--serif);
+}
+.closing-card strong { color: var(--ink); font-weight: 650; }
 .citation { padding-bottom: 28px; }
 .bib-head {
   display: flex;

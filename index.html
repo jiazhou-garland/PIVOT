@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=41">
+  <link rel="stylesheet" href="styles.css?v=42">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -141,7 +141,7 @@
           <li><a href="#probe">02 What the probe reveals</a></li>
           <li><a href="#method">03 Putting state rollback in the weights</a></li>
           <li><a href="#evidence">04 Results across five tasks</a></li>
-          <li><a href="#sentence">05 Takeaway and outlook</a></li>
+          <li><a href="#sentence">05 Findings, solution, outlook</a></li>
         </ol>
       </aside>
 
@@ -683,10 +683,25 @@
     </div>
 
     <section class="close" id="sentence">
-      <p class="section-kicker">05 · Takeaway and outlook</p>
-      <h2>Put hindsight in the weights. Stop flooding the agent with repair prompts at inference.</h2>
-      <p>Rather than sending ever longer skill prompts to teach an agent to self-correct, post-training can internalize hindsight about the pivot into the model itself. That is the posture we want for embodied RL: diagnose once in training, act cleanly at test time.</p>
-      <p>Today Stage I still leans on heuristic solvers to label pivots. A natural next step is unsupervised pivot sensing from token entropy or self-play. That would open the same recipe to open-world agents that have no perfect simulator rewind.</p>
+      <p class="section-kicker">05 · Findings, solution, outlook</p>
+      <h2>What stalls GRPO, what PIVOT fixes, and where this goes next</h2>
+      <div class="closing-grid" role="list">
+        <article class="closing-card" role="listitem">
+          <p class="closing-kicker">Key findings</p>
+          <h3>Where GRPO stalls, and what hindsight really buys</h3>
+          <p>GRPO stalls in multi-turn visual tasks when a single-step error causes full-trajectory failure and gradient collapse. Hindsight distillation such as OPD/OPSD relies mainly on physical environment rollbacks at the exact pivot turn <em>t*</em>, while text hints add little.</p>
+        </article>
+        <article class="closing-card" role="listitem">
+          <p class="closing-kicker">Proposed solution · PIVOT</p>
+          <h3>Bake hindsight into the weights</h3>
+          <p>To break the rollback paradox, PIVOT puts hindsight into model weights rather than inference prompts. One VLM acts as Analyzer (locating the pivot), Teacher (distilling visual feedback), and Student in training, then deploys as a standalone Student with zero test-time overhead, lifting Qwen2.5-VL-3B to <strong>0.90 (+8%)</strong>.</p>
+        </article>
+        <article class="closing-card" role="listitem">
+          <p class="closing-kicker">Future outlook</p>
+          <h3>Unsupervised pivot sensing</h3>
+          <p>Replacing heuristic pivot labeling with unsupervised sensing via token entropy or self-play can drop simulator-rewind dependencies and open scalable post-training for open-world agents.</p>
+        </article>
+      </div>
     </section>
 
     <section class="citation" id="citation">
