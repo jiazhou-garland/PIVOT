@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=33">
+  <link rel="stylesheet" href="styles.css?v=34">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -162,7 +162,7 @@
       <aside class="toc" aria-label="On this page">
         <p>On this page</p>
         <ol>
-          <li><a href="#puzzle">01 Credit assignment</a></li>
+          <li><a href="#puzzle">01 The GRPO paradox</a></li>
           <li><a href="#probe">02 Rollback probe</a></li>
           <li><a href="#motivation">03 The motivation</a></li>
           <li><a href="#method">04 The recipe</a></li>
@@ -173,15 +173,16 @@
 
       <article>
         <section class="section" id="puzzle">
-          <p class="section-kicker">01 — Credit assignment</p>
-          <h2>Episode-level credit cannot see the pivot step</h2>
-          <p class="lede">GRPO ranks whole trajectories by a single scalar return, failing to isolate the first unrecoverable turn.</p>
+          <p class="story-hook">We thought training agents to self-correct with GRPO would be straightforward—until we hit a strange failure mode.</p>
+          <p class="section-kicker">01 — The GRPO paradox</p>
+          <h2>Why can’t episode-level RL name the pivot step?</h2>
+          <p class="lede">GRPO ranks whole trajectories by one scalar return. Multi-turn agents usually fail at a single unrecoverable turn—and that turn never shows up in the gradient.</p>
 
           <div class="defect-grid" role="list">
             <article class="defect-card defect-card--silence" role="listitem">
-              <p class="defect-kicker"><i class="defect-dot silence" aria-hidden="true"></i> Zero-gradient silence · σ = 0</p>
-              <h3>Advantage vanishes</h3>
-              <p class="defect-issue">When all eight sampled rollouts fail with the same return, group variance is zero. The advantage is zero, so the policy gets <strong>no gradient update</strong>.</p>
+              <p class="defect-kicker"><i class="defect-dot silence" aria-hidden="true"></i> Phenomenon A · σ = 0</p>
+              <h3>Everyone fails → the model plays dead</h3>
+              <p class="defect-issue">Sample eight rollouts; if every return matches, group variance is zero. Advantage vanishes—<strong>zero-gradient silence</strong>—so the policy learns nothing, even when the failures are different mistakes.</p>
               <dl class="defect-stats">
                 <div>
                   <dt>48.3%</dt>
@@ -192,13 +193,13 @@
                   <dd>PrimitiveSkill groups frozen</dd>
                 </div>
               </dl>
-              <p class="defect-meta">Untrained Qwen2.5-VL-3B · failures inside a group need not be the same mistake</p>
+              <p class="defect-meta">Untrained Qwen2.5-VL-3B</p>
             </article>
 
             <article class="defect-card defect-card--coarse" role="listitem">
-              <p class="defect-kicker"><i class="defect-dot coarse" aria-hidden="true"></i> Coarse episode-level credit · σ &gt; 0</p>
-              <h3>Length, not the pivot step</h3>
-              <p class="defect-issue">Even with a −0.1 step penalty (FrozenLake / Navigation), the scalar advantage is still painted onto <strong>every action token</strong>.</p>
+              <p class="defect-kicker"><i class="defect-dot coarse" aria-hidden="true"></i> Phenomenon B · σ &gt; 0</p>
+              <h3>A signal arrives → still a blunt instrument</h3>
+              <p class="defect-issue">Even with a −0.1 step penalty (FrozenLake / Navigation), credit is painted onto <strong>every action token</strong>. The update punishes episode length—it never isolates the pivot step <em>t*</em>.</p>
               <dl class="defect-stats">
                 <div>
                   <dt>σ &gt; 0</dt>
@@ -206,27 +207,28 @@
                 </div>
                 <div>
                   <dt>t*</dt>
-                  <dd>Never isolated</dd>
+                  <dd>Never named</dd>
                 </div>
               </dl>
-              <p class="defect-meta">Punishes trajectory length—not the first unrecoverable action</p>
+              <p class="defect-meta">One scalar for every token—no surgical cut at t*</p>
             </article>
           </div>
 
           <figure class="figure credit-figure">
+            <p class="figure-kicker">Visual proof</p>
             <div class="fig-badges" aria-label="Figure legend">
-              <span class="fig-badge fig-badge--silence"><i aria-hidden="true"></i> Red · σ = 0 · zero-gradient silence</span>
-              <span class="fig-badge fig-badge--coarse"><i aria-hidden="true"></i> Blue · σ &gt; 0 · coarse episode penalty</span>
+              <span class="fig-badge fig-badge--silence"><i aria-hidden="true"></i> Red · σ = 0 · plays dead</span>
+              <span class="fig-badge fig-badge--coarse"><i aria-hidden="true"></i> Blue · σ &gt; 0 · blunt credit</span>
             </div>
             <div class="figure-frame">
-              <img src="figures/fig_sec2_motivation_a.png?v=3" alt="Failed-rollout return distributions. Red marks zero-gradient silence (σ=0); blue marks coarse episode-level credit (σ&gt;0). Sokoban shows 48.3% frozen groups.">
+              <img src="figures/fig_sec2_motivation_a.png?v=3" alt="Failed-rollout return distributions. Red marks zero-gradient silence (σ=0); blue marks coarse episode-level credit (σ&gt;0).">
             </div>
-            <figcaption>Failed return distributions across benchmarks. Red is zero-gradient silence (σ=0), where GRPO provides no optimization signal.</figcaption>
+            <figcaption>Failed return distributions across benchmarks. Red is zero-gradient silence (σ=0)—no optimization signal. Blue still only scores the whole episode.</figcaption>
           </figure>
 
           <blockquote class="pull">
-            <span>Takeaway</span>
-            Failed GRPO trajectories either suffer from <strong>zero-gradient silence</strong> or <strong>coarse episode-level credit</strong>—neither can locate the first unrecoverable action (<em>t*</em>).
+            <span>Cliffhanger</span>
+            So how do we hand the model a scalpel—and cut precisely into the pivot step <em>t*</em>?
           </blockquote>
         </section>
 

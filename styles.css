@@ -546,6 +546,19 @@ html[data-theme="dark"] .button-primary { color: #211411; }
   text-transform: uppercase;
 }
 .section h2 { margin-bottom: 8px; }
+.story-hook {
+  margin: 0 0 18px;
+  max-width: 38em;
+  color: var(--ink-soft);
+  font: italic 400 20px/1.45 var(--serif);
+}
+.figure-kicker {
+  margin: 0 0 10px;
+  color: var(--faint);
+  font: 600 12px/1 var(--sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
 .lede {
   margin: 14px 0 0;
   color: var(--ink-soft);
