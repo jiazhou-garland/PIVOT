@@ -375,9 +375,14 @@ html[data-theme="dark"] .button-primary { color: #211411; }
   justify-content: space-between;
   gap: 12px;
   color: var(--faint);
-  font: 600 11px/1 var(--sans);
+  font: 600 13px/1 var(--sans);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+.lab-header span:first-child {
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0.14em;
 }
 .live-dot { display: inline-flex; align-items: center; gap: 7px; color: var(--green); }
 .live-dot i {
