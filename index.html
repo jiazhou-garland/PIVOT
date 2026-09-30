@@ -67,7 +67,7 @@
         </div>
         <aside class="hero-highlight">
           <p>As VLMs move into embodied and multi-turn agents, GRPO-style post-training looks like the natural fix. In practice it often stalls: one bad pivot turn can sink a long trajectory, while group returns stay too coarse (or go silent) to name that turn.</p>
-          <p>Hindsight methods such as OPD/OPSD seemed to help. Our counterfactual probes show <strong>almost all of the gain comes from physically restoring the environment at the pivot step</strong>. Text skill hints add next to nothing. Real deployments cannot rewind the world on demand.</p>
+          <p>Hindsight methods such as OPD/OPSD seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
           <p><strong>PIVOT</strong> answers that rollback paradox: one VLM plays Analyzer, Teacher, and Student in training, then ships as a plain Student with <strong>0.90 (+8%)</strong> on Qwen2.5-VL-3B across five visual agent tasks, and zero extra test-time cost.</p>
         </aside>
         <div class="hero-solution">
@@ -138,7 +138,7 @@
         </li>
         <li>
           <span>02</span>
-          <p>OPD/OPSD look like better prompting. Probes show the real lift is a physical rewind to <em>t*</em>. Skill text is a tiny bonus, and one step late collapses recovery.</p>
+          <p>OPD/OPSD look like better prompting. Probes show the lift comes mainly from a physical rewind to <em>t*</em>. Skill text is a smaller bonus, and one step late collapses recovery.</p>
         </li>
         <li>
           <span>03</span>
@@ -226,7 +226,7 @@
 
         <section class="section" id="probe">
           <p class="section-kicker">02 · What the probe reveals</p>
-          <h2>Skill hints are a freebie. Time rollback does the real work.</h2>
+          <h2>Skill hints help a little. Time rollback does most of the work.</h2>
           <p class="lede">Many people assumed OPD/OPSD work because a stronger teacher writes better skill text. We treated that as a hypothesis to test, not a conclusion.</p>
           <p>We define the <strong>pivot step</strong> <em>t*</em> as the first action that leaves the remaining budget infeasible. Then we rewind failed rollouts and resample one suffix from the same base policy, changing only two knobs: <em>when</em> we restore, and <em>whether</em> we append a skill hint.</p>
           <figure class="formula">
@@ -243,9 +243,9 @@
 
           <div class="analysis-row">
             <div class="analysis-copy">
-              <h4>Finding 1 · State rollback dominates</h4>
+              <h4>Finding 1 · State rollback leads</h4>
               <p>Restore the physical state at <em>t*</em> with no text at all, and suffix return lift ΔR already covers most of the gain (3.3% to 56.6% across tasks). The same restore also cuts zero-variance groups (Sokoban 48.3% to 41.7%, PrimitiveSkill 16.5% to 3.8%).</p>
-              <h4>Finding 2 · Skill text is a freebie</h4>
+              <h4>Finding 2 · Skill text is secondary</h4>
               <p>Self-written hints differ from no-hint by at most 2.6 points. An 8B teacher adds only 0.3 to 3.5 on top of the 3B self hint. On Navigation, plain no-hint at <em>t*</em> is already best.</p>
               <h4>Finding 3 · One step late collapses recovery</h4>
               <p>Rewind at <em>t*+1</em> instead of <em>t*</em>, and ΔR drops hard (Sokoban 3.3% to 0.9%, PrimitiveSkill 17.7% to 8.3%, FrozenLake 18.2% to 8.1%). Timing precision is the key, not prompt polish.</p>
@@ -288,7 +288,7 @@
           <p class="lede">The probe leaves a paradox: recovery needs a restore at <em>t*</em>, yet online RL cannot restart the world, and deployment cannot carry an external teacher plus long skill prompts.</p>
           <blockquote class="pull">
             <span>Rollback paradox</span>
-            Almost all recovery comes from rolling the state back to the pivot. Explicit physical rewinds are too costly online, and impossible in many real settings.
+            Recovery comes mainly from rolling the state back to the pivot. Explicit physical rewinds are too costly online, and impossible in many real settings.
           </blockquote>
           <p>PIVOT’s answer is one VLM π<sub>θ</sub> that plays three roles in training, then ships as a plain Student at test time: find the pivot without resetting, move credit onto tokens, and drop the extras at deploy.</p>
           <figure class="figure">
