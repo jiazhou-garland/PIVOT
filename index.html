@@ -67,7 +67,7 @@
         </div>
         <aside class="hero-highlight">
           <p>As VLMs move into embodied and multi-turn agents, GRPO-style post-training looks like the natural fix. In practice it often stalls: one bad pivot turn can sink a long trajectory, while group returns stay too coarse (or go silent) to name that turn.</p>
-          <p>Hindsight methods such as OPD/OPSD seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
+          <p>Methods leveraging hindsight feedback, such as On-Policy Distillation (OPD) and On-Policy Self-Distillation (OPSD), seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
           <p><strong>PIVOT</strong> answers that rollback paradox: one VLM plays Analyzer, Teacher, and Student in training, then ships as a plain Student with <strong>0.90 (+8%)</strong> on Qwen2.5-VL-3B across five visual agent tasks, and zero extra test-time cost.</p>
         </aside>
         <div class="hero-solution">
