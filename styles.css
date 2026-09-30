@@ -238,10 +238,13 @@ h1 em,
 }
 
 .hero-badges {
+  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 16px;
+  margin-bottom: 4px;
   font-family: var(--sans);
 }
 .hero-badge {

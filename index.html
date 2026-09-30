@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=39">
+  <link rel="stylesheet" href="styles.css?v=40">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -58,13 +58,13 @@
   <main id="main">
     <section class="hero" id="top">
       <h1 class="hero-title reveal">Rethinking OPSD/OPD: Visual Agents Need <em>Precise State Rollback</em>, Not Fancy Prompts</h1>
+      <div class="hero-badges reveal" aria-label="Links">
+        <a class="hero-badge is-live" href="https://arxiv.org/abs/2609.35303" target="_blank" rel="noopener noreferrer">arXiv</a>
+        <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">Code</span>
+        <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">HF Models</span>
+        <a class="hero-badge is-live" href="https://github.com/jiazhou-garland/PIVOT">Project page</a>
+      </div>
       <div class="hero-copy reveal">
-        <div class="hero-badges" aria-label="Links">
-          <a class="hero-badge is-live" href="https://arxiv.org/abs/2609.35303" target="_blank" rel="noopener noreferrer">arXiv</a>
-          <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">Code</span>
-          <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">HF Models</span>
-          <a class="hero-badge is-live" href="https://github.com/jiazhou-garland/PIVOT">Project page</a>
-        </div>
         <aside class="hero-highlight">
           <p>As VLMs move into embodied and multi-turn agents, GRPO-style post-training looks like the natural fix. In practice it often stalls: one bad pivot turn can sink a long trajectory, while group returns stay too coarse (or go silent) to name that turn.</p>
           <p>Methods leveraging hindsight feedback, such as On-Policy Distillation (OPD) and On-Policy Self-Distillation (OPSD), seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
