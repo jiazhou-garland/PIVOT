@@ -189,11 +189,22 @@ html[data-theme="light"] .moon-icon { display: none; }
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-  gap: 48px;
-  align-items: center;
+  gap: 28px 48px;
+  align-items: start;
   width: var(--page);
   margin: 28px auto 0;
   padding: 18px 0 10px;
+}
+
+.hero-title {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: none;
+  font-size: clamp(36px, 4.6vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  text-wrap: balance;
 }
 
 .eyebrow {
@@ -214,13 +225,13 @@ html[data-theme="light"] .moon-icon { display: none; }
 
 h1 {
   margin: 0;
-  max-width: min(100%, 28rem);
   font-size: clamp(34px, 4.4vw, 52px);
   font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1.12;
 }
-h1 em {
+h1 em,
+.hero-title em {
   font-style: italic;
   font-weight: 500;
   color: var(--accent);
@@ -1249,7 +1260,7 @@ html[data-theme="dark"] pre { background: #10100e; border: 1px solid var(--line)
 
 @media (max-width: 860px) {
   .hero, .pair, .analysis-row, .stat-row, .method-split, .defect-grid { grid-template-columns: 1fr; }
-  h1 { font-size: 48px; }
+  .hero-title, h1 { font-size: clamp(32px, 8vw, 44px); }
 }
 
 @media (max-width: 720px) {
