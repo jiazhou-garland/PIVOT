@@ -1344,7 +1344,7 @@ html[data-theme="dark"] pre { background: #10100e; border: 1px solid var(--line)
 }
 
 @media (max-width: 860px) {
-  .hero, .pair, .analysis-row, .stat-row, .method-split, .defect-grid, .finding-grid { grid-template-columns: 1fr; }
+  .hero, .pair, .analysis-row, .stat-row, .method-split, .defect-grid, .finding-grid, .probe-figures { grid-template-columns: 1fr; }
   .hero-title, h1 { font-size: clamp(32px, 8vw, 44px); }
 }
 
