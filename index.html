@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=24">
+  <link rel="stylesheet" href="styles.css?v=25">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -60,6 +60,15 @@
       <div class="hero-copy reveal">
         <p class="eyebrow"><span></span> Pivot-Aware Internalized Visual On-Policy Training</p>
         <h1>Does hindsight <em>really need a hint?</em></h1>
+        <div class="hero-badges" aria-label="Links">
+          <span class="hero-badge">arXiv (Coming soon)</span>
+          <span class="hero-badge">Code (Coming soon)</span>
+          <span class="hero-badge">HF (Coming soon)</span>
+          <a class="hero-badge is-live" href="https://github.com/jiazhou-garland/PIVOT">Project page</a>
+        </div>
+        <aside class="hero-highlight">
+          <p><strong>PIVOT</strong> shows that OPD/OPSD recovery in multi-turn VLM agents comes from <em>physical state rollback</em> at the pivot step <em>t*</em>—not skill prompts. Internalizing visual pivot diagnosis into policy updates reaches <strong>0.92</strong> on Qwen3-VL-2B across five tasks (<strong>+12%</strong>), with <strong>zero</strong> extra test-time compute or prompt latency.</p>
+        </aside>
         <p class="hero-kicker">Physical restoration dominates skill prompts</p>
         <p class="hero-dek">Hindsight helps multi-turn VLM agents—but why? Across five benchmarks, most of the OPD/OPSD lift comes from restoring the environment at the <em>pivot step</em>, not from extra skill text. Real worlds rarely rewind. PIVOT writes that localization and restoration into the weights: no simulator reset in training, no hint at test time.</p>
         <div class="byline">

@@ -225,6 +225,54 @@ h1 em {
   color: var(--accent);
 }
 
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--sans);
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+.hero-badge.is-live {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+.hero-badge.is-live:hover { color: var(--accent-hover); }
+
+.hero-highlight {
+  max-width: 40rem;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(139, 49, 47, 0.08), rgba(139, 49, 47, 0.02) 48%, rgba(85, 123, 143, 0.05)),
+    var(--accent-wash);
+  box-shadow: inset 0 1px 0 rgba(255, 253, 248, 0.65);
+}
+.hero-highlight p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 17.5px;
+  line-height: 1.5;
+}
+.hero-highlight strong { font-weight: 650; color: var(--accent); }
+.hero-highlight em { font-style: italic; }
+
 .hero-kicker {
   margin: 22px 0 0;
   color: var(--accent);
