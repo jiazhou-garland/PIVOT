@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=25">
+  <link rel="stylesheet" href="styles.css?v=26">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -158,21 +158,6 @@
           <span><i class="legend-dot"></i> Still recoverable</span>
           <span><i class="legend-dot update"></i> First unrecoverable action</span>
         </div>
-      </div>
-    </section>
-
-    <section class="metrics reveal" aria-label="Headline results">
-      <div class="metric">
-        <strong>+8%</strong>
-        <span>3B over SFT-GRPO, 0.83 → 0.90</span>
-      </div>
-      <div class="metric">
-        <strong>+5%</strong>
-        <span>3B over GLANCE-Full, 0.86 → 0.90</span>
-      </div>
-      <div class="metric">
-        <strong>+12%</strong>
-        <span>2B over SFT-GRPO, 0.82 → 0.92</span>
       </div>
     </section>
 
@@ -530,10 +515,19 @@
           <p class="section-kicker">06 — Evidence</p>
           <h2>SOTA without extra machinery at test time</h2>
           <p class="lede">Five VAGEN tasks spanning cognitive grid puzzles, 3D embodied control and navigation, and generative SVG. Success rate everywhere except SVG, which uses a DINO and DreamSim composite. Full PIVOT is the M+P+R stack.</p>
-          <div class="stat-row">
-            <div class="stat"><b>+8%</b><span>3B full PIVOT over SFT+GRPO, 0.83 to 0.90</span></div>
-            <div class="stat"><b>0.90 vs 0.86</b><span>3B PIVOT against GLANCE-Full, the previous dense-reward SOTA</span></div>
-            <div class="stat"><b>+12%</b><span>2B full PIVOT over SFT+GRPO, 0.82 to 0.92</span></div>
+          <div class="metrics" aria-label="Headline results">
+            <div class="metric">
+              <strong>+8%</strong>
+              <span>3B over SFT-GRPO, 0.83 → 0.90</span>
+            </div>
+            <div class="metric">
+              <strong>+5%</strong>
+              <span>3B over GLANCE-Full, 0.86 → 0.90</span>
+            </div>
+            <div class="metric">
+              <strong>+12%</strong>
+              <span>2B over SFT-GRPO, 0.82 → 0.92</span>
+            </div>
           </div>
 
           <div class="seg" data-switch="backbone" role="group" aria-label="Results and training curves">

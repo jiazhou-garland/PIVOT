@@ -500,6 +500,10 @@ html[data-theme="dark"] .bars-mini.entropy i { background: #3a3344; }
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
+.section .metrics {
+  width: 100%;
+  margin: 22px 0 8px;
+}
 .metric { padding: 28px 8px 26px; text-align: center; }
 .metric + .metric { border-left: 1px solid var(--line); }
 .metric strong {
