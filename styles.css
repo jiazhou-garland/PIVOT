@@ -214,10 +214,11 @@ html[data-theme="light"] .moon-icon { display: none; }
 
 h1 {
   margin: 0;
-  font-size: clamp(52px, 6.2vw, 84px);
+  max-width: 18ch;
+  font-size: clamp(34px, 4.4vw, 52px);
   font-weight: 500;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
 }
 h1 em {
   font-style: italic;
@@ -278,8 +279,9 @@ h1 em {
 .hero-highlight strong { font-weight: 650; color: var(--accent); }
 .hero-highlight em { font-style: italic; }
 
+.hero-solution { margin-top: 20px; max-width: 38rem; }
 .hero-kicker {
-  margin: 22px 0 0;
+  margin: 0;
   color: var(--accent);
   font-size: 22px;
   font-weight: 550;
@@ -287,11 +289,35 @@ h1 em {
 }
 
 .hero-dek {
-  max-width: 38rem;
-  margin: 14px 0 0;
+  margin: 10px 0 0;
   color: var(--ink-soft);
-  font-size: 20px;
+  font-size: 18.5px;
+  line-height: 1.45;
 }
+
+.hero-points {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.hero-points li {
+  position: relative;
+  padding-left: 1.05em;
+  color: var(--ink-soft);
+  font-size: 16.5px;
+  line-height: 1.45;
+}
+.hero-points li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.hero-points strong { color: var(--ink); font-weight: 650; }
+.hero-points strong:first-child { color: var(--accent); }
 
 .byline {
   display: flex;

@@ -9,12 +9,12 @@
   <meta property="og:title" content="PIVOT: Pivot-Aware Internalized Visual On-Policy Training">
   <meta property="og:description" content="Physical state rollback at the pivot step drives OPD/OPSD. PIVOT writes that restoration into the weights and strips the extra roles at test time.">
   <meta property="og:type" content="article">
-  <title>Does hindsight really need a hint? · PIVOT</title>
+  <title>What Makes OPD/OPSD Really Work in VLM Agents RL Post-training? · PIVOT</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=27">
+  <link rel="stylesheet" href="styles.css?v=28">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -58,19 +58,24 @@
   <main id="main">
     <section class="hero" id="top">
       <div class="hero-copy reveal">
-        <p class="eyebrow"><span></span> PIVOT: Pivot-Aware On-Policy Self-Distillation for VLM Agents</p>
-        <h1>Does hindsight <em>really need a hint?</em></h1>
+        <h1>What Makes OPD/OPSD Really Work in <em>VLM Agents</em> RL Post-training?</h1>
         <div class="hero-badges" aria-label="Links">
           <a class="hero-badge is-live" href="https://arxiv.org/abs/2609.35303" target="_blank" rel="noopener noreferrer">arXiv</a>
+          <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">Code</span>
+          <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">HF Models</span>
           <a class="hero-badge is-live" href="https://github.com/jiazhou-garland/PIVOT">Project page</a>
-          <span class="hero-badge is-soon" aria-disabled="true">GitHub (Coming soon)</span>
-          <span class="hero-badge is-soon" aria-disabled="true">Hugging Face (Coming soon)</span>
         </div>
         <aside class="hero-highlight">
-          <p><strong>TL;DR:</strong> Recovery in multi-turn VLM agents is driven by physical state rollback, not skill prompts. PIVOT internalizes this visual diagnosis into policy updates—achieving <strong>0.92</strong> accuracy (<strong>+12%</strong>) on Qwen3-VL-2B with <strong>zero</strong> test-time overhead.</p>
+          <p><strong>(Mechanism)</strong> Recovery in OPD/OPSD is driven by physical state rollback at the pivot step (<em>t*</em>), not textual skill hints. However, real-world environments rarely allow rewinds.</p>
         </aside>
-        <p class="hero-kicker">Why does hindsight work—and how to deploy it?</p>
-        <p class="hero-dek">Hindsight improves multi-turn VLM agents, but real-world environments rarely rewind. We discover that performance gains come almost entirely from restoring the state at the <em>pivot step</em>, rather than text hints. PIVOT bakes this pivot localization and state restoration directly into the model weights—delivering hindsight-level recovery with no simulator resets and no test-time prompts.</p>
+        <div class="hero-solution">
+          <p class="hero-kicker">Solution: PIVOT</p>
+          <p class="hero-dek">PIVOT bakes visual pivot localization directly into model weights via self-distillation—delivering hindsight-level recovery.</p>
+          <ul class="hero-points">
+            <li><strong>No Simulator Reset:</strong> Replaces physical env-rewinds with internalized visual diagnosis.</li>
+            <li><strong>Zero Test-Time Overhead:</strong> Achieves <strong>0.92</strong> accuracy (<strong>+12%</strong>) across five VLM agent tasks on Qwen3-VL-2B with <strong>0</strong> extra prompt latency.</li>
+          </ul>
+        </div>
         <div class="byline">
           <span>Jiazhou Zhou</span>
           <i aria-hidden="true">·</i>
