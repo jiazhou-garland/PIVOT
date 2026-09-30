@@ -1095,6 +1095,55 @@ details ul { margin: 0 0 12px; padding-left: 1.1em; }
   font: 500 13px/1.4 var(--sans);
 }
 
+.finding-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 26px;
+}
+.finding-card {
+  margin: 0;
+  padding: 18px 16px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.finding-card:nth-child(1) {
+  border-color: color-mix(in srgb, var(--accent) 26%, var(--line));
+  background: linear-gradient(180deg, var(--accent-wash), var(--surface) 46%);
+}
+.finding-card:nth-child(2) {
+  border-color: color-mix(in srgb, var(--blue) 26%, var(--line));
+  background: linear-gradient(180deg, var(--blue-soft), var(--surface) 46%);
+}
+.finding-card:nth-child(3) {
+  border-color: color-mix(in srgb, var(--green) 26%, var(--line));
+  background: linear-gradient(180deg, var(--green-soft), var(--surface) 46%);
+}
+.finding-kicker {
+  margin: 0;
+  color: var(--muted);
+  font: 650 12px/1 var(--sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.finding-card h3 {
+  margin: 10px 0 0;
+  font-size: 22px;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+}
+.finding-card p {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.45;
+}
+.probe-figures {
+  margin-top: 22px;
+}
+.probe-figures .figure { margin: 0; }
+
 .credit-figure { margin-top: 22px; }
 .fig-badges {
   display: flex;
@@ -1259,7 +1308,7 @@ html[data-theme="dark"] pre { background: #10100e; border: 1px solid var(--line)
 }
 
 @media (max-width: 860px) {
-  .hero, .pair, .analysis-row, .stat-row, .method-split, .defect-grid { grid-template-columns: 1fr; }
+  .hero, .pair, .analysis-row, .stat-row, .method-split, .defect-grid, .finding-grid { grid-template-columns: 1fr; }
   .hero-title, h1 { font-size: clamp(32px, 8vw, 44px); }
 }
 

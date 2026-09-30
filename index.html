@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=37">
+  <link rel="stylesheet" href="styles.css?v=38">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -223,29 +223,32 @@
           </figure>
           <p>Four arms share the same failed starts: <strong>no-hint</strong> at <em>t*</em>, <strong>no-hint</strong> at <em>t*+1</em>, <strong>3B-self</strong> (self-written skill), and <strong>8B-teacher</strong> (Qwen3-VL-8B skill).</p>
 
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <h4>Finding 1 · State rollback leads</h4>
-              <p>Restore the physical state at <em>t*</em> with no text at all, and suffix return lift ΔR already covers most of the gain (3.3% to 56.6% across tasks). The same restore also cuts zero-variance groups (Sokoban 48.3% to 41.7%, PrimitiveSkill 16.5% to 3.8%).</p>
-              <h4>Finding 2 · Skill text is secondary</h4>
+          <div class="finding-grid" role="list">
+            <article class="finding-card" role="listitem">
+              <p class="finding-kicker">Finding 1</p>
+              <h3>State rollback leads</h3>
+              <p>Restore the physical state at <em>t*</em> with no text at all, and suffix return lift ΔR already covers most of the gain (3.3% to 56.6% across tasks). The same restore also cuts zero-variance groups (Sokoban 48.3% to 41.7%, PrimitiveSkill 16.5% to 3.8%), bringing back a usable GRPO signal where the baseline was silent.</p>
+            </article>
+            <article class="finding-card" role="listitem">
+              <p class="finding-kicker">Finding 2</p>
+              <h3>Skill text is secondary</h3>
               <p>Self-written hints differ from no-hint by at most 2.6 points. An 8B teacher adds only 0.3 to 3.5 on top of the 3B self hint. On Navigation, plain no-hint at <em>t*</em> is already best.</p>
-              <h4>Finding 3 · One step late collapses recovery</h4>
+            </article>
+            <article class="finding-card" role="listitem">
+              <p class="finding-kicker">Finding 3</p>
+              <h3>One step late collapses recovery</h3>
               <p>Rewind at <em>t*+1</em> instead of <em>t*</em>, and ΔR drops hard (Sokoban 3.3% to 0.9%, PrimitiveSkill 17.7% to 8.3%, FrozenLake 18.2% to 8.1%). Timing precision is the key, not prompt polish.</p>
-            </div>
-            <figure class="figure analysis-figure">
+            </article>
+          </div>
+
+          <div class="pair probe-figures">
+            <figure class="figure">
               <div class="figure-frame">
                 <img src="figures/fig_sec2_motivation_b.png?v=5" alt="Suffix-return lift rate under four rollback probes across five tasks.">
               </div>
               <figcaption>Suffix return lift ΔR (%). Same failed starts, one resampled suffix, four probe arms.</figcaption>
             </figure>
-          </div>
-
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <h4>Zero-variance groups reopen</h4>
-              <p>Physical restore at the pivot does more than raise returns. It also brings back a usable GRPO signal where the baseline was silent.</p>
-            </div>
-            <figure class="figure analysis-figure">
+            <figure class="figure">
               <div class="figure-frame">
                 <img src="figures/fig_sec2_motivation_c.png?v=5" alt="Zero-variance group rate on Sokoban and PrimitiveSkill under baseline and four rollback probes.">
               </div>
