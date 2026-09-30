@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Rethinking OPSD/OPD for visual agents: counterfactual probes show that gains come mainly from rolling back to the pivot step, with skill prompts adding little. PIVOT bakes that rewind into the weights with zero test-time overhead.">
+  <meta name="description" content="Rethinking OPSD/OPD for visual agents: counterfactual probes show that gains come mainly from rolling back to the pivot step, with skill prompts adding little. PIVOT bakes that state rollback into the weights with zero test-time overhead.">
   <meta name="theme-color" content="#f8f6f0">
-  <meta property="og:title" content="Rethinking OPSD/OPD: Visual Agents Need Precise Time Rollback">
-  <meta property="og:description" content="Skill hints help a little. Physical rollback at the pivot step does most of the work. PIVOT internalizes that rewind into one VLM and ships with zero extra latency.">
+  <meta property="og:title" content="Rethinking OPSD/OPD: Visual Agents Need Precise State Rollback">
+  <meta property="og:description" content="Skill hints help a little. State rollback at the pivot step does most of the work. PIVOT internalizes that state rollback into one VLM and ships with zero extra latency.">
   <meta property="og:type" content="article">
-  <title>Rethinking OPSD/OPD: Visual Agents Need Precise Time Rollback · PIVOT</title>
+  <title>Rethinking OPSD/OPD: Visual Agents Need Precise State Rollback · PIVOT</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +57,7 @@
 
   <main id="main">
     <section class="hero" id="top">
-      <h1 class="hero-title reveal">Rethinking OPSD/OPD: Visual Agents Need <em>Precise Time Rollback</em>, Not Fancy Prompts</h1>
+      <h1 class="hero-title reveal">Rethinking OPSD/OPD: Visual Agents Need <em>Precise State Rollback</em>, Not Fancy Prompts</h1>
       <div class="hero-copy reveal">
         <div class="hero-badges" aria-label="Links">
           <a class="hero-badge is-live" href="https://arxiv.org/abs/2609.35303" target="_blank" rel="noopener noreferrer">arXiv</a>
@@ -120,11 +120,11 @@
         </li>
         <li>
           <span>02</span>
-          <p>OPD/OPSD look like better prompting. Probes show the lift comes mainly from a physical rewind to <em>t*</em>. Skill text is a smaller bonus, and one step late collapses recovery.</p>
+          <p>OPD/OPSD look like better prompting. Probes show the lift comes mainly from a state rollback to <em>t*</em>. Skill text is a smaller bonus, and one step late collapses recovery.</p>
         </li>
         <li>
           <span>03</span>
-          <p>PIVOT puts that rewind inside the weights: one model diagnoses, re-scores, and acts. At test time only the Student remains.</p>
+          <p>PIVOT puts that state rollback inside the weights: one model diagnoses, re-scores, and acts. At test time only the Student remains.</p>
         </li>
         <li>
           <span>04</span>
@@ -139,7 +139,7 @@
         <ol>
           <li><a href="#puzzle">01 When GRPO stalls</a></li>
           <li><a href="#probe">02 What the probe reveals</a></li>
-          <li><a href="#method">03 Putting the rewind in the weights</a></li>
+          <li><a href="#method">03 Putting state rollback in the weights</a></li>
           <li><a href="#evidence">04 Results across five tasks</a></li>
           <li><a href="#sentence">05 Takeaway and outlook</a></li>
         </ol>
@@ -208,7 +208,7 @@
 
         <section class="section" id="probe">
           <p class="section-kicker">02 · What the probe reveals</p>
-          <h2>Skill hints help a little. Time rollback does most of the work.</h2>
+          <h2>Skill hints help a little. State rollback does most of the work.</h2>
           <p class="lede">Many people assumed OPD/OPSD work because a stronger teacher writes better skill text. We treated that as a hypothesis to test, not a conclusion.</p>
           <p>We define the <strong>pivot step</strong> <em>t*</em> as the first action that leaves the remaining budget infeasible. Then we rewind failed rollouts and resample one suffix from the same base policy, changing only two knobs: <em>when</em> we restore, and <em>whether</em> we append a skill hint.</p>
           <figure class="formula">
@@ -260,17 +260,17 @@
 
           <blockquote class="pull">
             <span>The catch</span>
-            Recovery wants a rewind to <em>t*</em>. Real environments and online RL rarely allow one. That is the rollback paradox.
+            Recovery wants a state rollback to <em>t*</em>. Real environments and online RL rarely allow one. That is the rollback paradox.
           </blockquote>
         </section>
 
         <section class="section" id="method" data-also="motivation">
-          <p class="section-kicker">03 · Putting the rewind in the weights</p>
-          <h2>How PIVOT turns a time machine into parameters</h2>
+          <p class="section-kicker">03 · Putting state rollback in the weights</p>
+          <h2>How PIVOT turns state rollback into parameters</h2>
           <p class="lede">The probe leaves a paradox: recovery needs a restore at <em>t*</em>, yet online RL cannot restart the world, and deployment cannot carry an external teacher plus long skill prompts.</p>
           <blockquote class="pull">
             <span>Rollback paradox</span>
-            Recovery comes mainly from rolling the state back to the pivot. Explicit physical rewinds are too costly online, and impossible in many real settings.
+            Recovery comes mainly from rolling the state back to the pivot. Explicit physical state rollbacks are too costly online, and impossible in many real settings.
           </blockquote>
           <p>PIVOT’s answer is one VLM π<sub>θ</sub> that plays three roles in training, then ships as a plain Student at test time: find the pivot without resetting, move credit onto tokens, and drop the extras at deploy.</p>
           <figure class="figure">
@@ -294,7 +294,7 @@
                 <article class="step-card">
                   <b>II</b>
                   <div>
-                    <h3>Internalize the rewind</h3>
+                    <h3>Internalize state rollback</h3>
                     <p>Each update samples eight rollouts. On a failure the Analyzer predicts the pivot and crops a three-frame visual panel. A stop-gradient Teacher re-scores the same failed tokens as if that panel were in context. No simulator reset required.</p>
                   </div>
                 </article>
@@ -316,7 +316,7 @@
                 </article>
                 <article class="role teacher">
                   <strong>Privileged Teacher</strong>
-                  <p>Re-scores the Student’s failed tokens under a three-frame panel around the predicted pivot. Stop-gradient. Same tokens, as if the rewind were visible.</p>
+                  <p>Re-scores the Student’s failed tokens under a three-frame panel around the predicted pivot. Stop-gradient. Same tokens, as if the state rollback were visible.</p>
                 </article>
                 <article class="role student">
                   <strong>Student</strong>
@@ -344,7 +344,7 @@
 
         <section class="section" id="credit">
           <p class="section-kicker">Inside the recipe · Visual credit</p>
-          <h2>The panel is the internalized rewind</h2>
+          <h2>The panel is the internalized state rollback</h2>
           <p class="lede">The Teacher never resets the simulator. A three-frame neighborhood around the predicted pivot is enough to re-score the original failed tokens.</p>
           <div class="seg" data-switch="panel" role="group" aria-label="Visual panels">
             <button type="button" data-value="sokoban" aria-pressed="true">Sokoban</button>
