@@ -70,14 +70,6 @@
           <p>Methods leveraging hindsight feedback, such as On-Policy Distillation (OPD) and On-Policy Self-Distillation (OPSD), seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
           <p><strong>PIVOT</strong> answers that rollback paradox: one VLM plays Analyzer, Teacher, and Student in training, then ships as a plain Student with <strong>0.90 (+8%)</strong> on Qwen2.5-VL-3B across five visual agent tasks, and zero extra test-time cost.</p>
         </aside>
-        <div class="hero-solution">
-          <p class="hero-kicker">Solution: PIVOT</p>
-          <p class="hero-dek">Bake pivot localization into the weights. Keep the rewind in training. Drop the rewind at test time.</p>
-          <ul class="hero-points">
-            <li><strong>No simulator reset at deploy:</strong> Visual diagnosis replaces physical env rewinds.</li>
-            <li><strong>Zero test-time overhead:</strong> <strong>0.90 (+8%)</strong> on Qwen2.5-VL-3B and <strong>0.92 (+12%)</strong> on Qwen3-VL-2B, with <strong>0</strong> extra prompt latency.</li>
-          </ul>
-        </div>
         <div class="hero-actions">
           <a class="button button-primary" href="#puzzle">
             Read the story
