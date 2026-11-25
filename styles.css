@@ -725,6 +725,27 @@ html[data-theme="dark"] .figure-frame { background: #f4f1ea; }
 .figure-compact .figure-frame {
   padding: 6px;
 }
+.panel-showcase {
+  margin-top: 10px;
+}
+.panel-showcase > h4 {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+.panel-showcase > .seg {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.panel-showcase .figure-panel {
+  max-width: min(920px, 100%);
+  margin: 6px auto 0;
+}
+.panel-showcase .figure-panel .figure-frame {
+  padding: 8px 10px;
+}
+.panel-showcase .figure-panel figcaption {
+  text-align: center;
+}
 .figure figcaption {
   margin-top: 10px;
   color: var(--muted);

@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=49">
+  <link rel="stylesheet" href="styles.css?v=50">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -379,6 +379,7 @@
             <h3>Stage II (RL): Counterfactual Token Re-Weighting via Visual-Diagnostic Hindsight</h3>
             <p>On each failed rollout, the 3-panel visual crop P<sub>t̂</sub> = [o<sub>t̂−1</sub>, o<sub>t̂</sub>, o<sub>t̂+1</sub>] pairs with (m̂, r̂) to form privileged hindsight <em>p</em>. The detached Teacher re-scores the Student’s original failed tokens under (<em>p</em>, h<sub>t</sub>), suppressing high-risk pivot tokens while leaving valid prefixes intact—even when GRPO advantages vanish (σ = 0). At test time, only the standalone Student remains.</p>
 
+            <div class="panel-showcase">
             <h4>Teacher Hindsight 3-Panel Visual Context</h4>
             <div class="seg" data-switch="panel" role="group" aria-label="Teacher local 3-panel visual hindsight examples">
               <button type="button" data-value="sokoban" aria-pressed="true">Sokoban</button>
@@ -387,36 +388,37 @@
               <button type="button" data-value="prim" aria-pressed="false">PrimitiveSkill</button>
               <button type="button" data-value="svg" aria-pressed="false">SVG</button>
             </div>
-            <figure class="figure figure-compact" data-view="panel" data-value="sokoban">
+            <figure class="figure figure-panel" data-view="panel" data-value="sokoban">
               <div class="figure-frame">
                 <img src="figures/pivot_self_opd/panel_sokoban.png" alt="Three Sokoban frames around a deadlock pivot.">
               </div>
               <figcaption>Sokoban, P<sub>t*</sub> at t* = 4, deadlock.</figcaption>
             </figure>
-            <figure class="figure figure-compact" data-view="panel" data-value="frozen" hidden>
+            <figure class="figure figure-panel" data-view="panel" data-value="frozen" hidden>
               <div class="figure-frame">
                 <img src="figures/pivot_self_opd/panel_frozenlake.png" alt="Three FrozenLake frames around a timeout pivot.">
               </div>
               <figcaption>FrozenLake, P<sub>t*</sub> at t* = 6, timeout.</figcaption>
             </figure>
-            <figure class="figure figure-compact" data-view="panel" data-value="nav" hidden>
+            <figure class="figure figure-panel" data-view="panel" data-value="nav" hidden>
               <div class="figure-frame">
                 <img src="figures/pivot_self_opd/panel_navigation.png" alt="Three navigation frames around a budget pivot.">
               </div>
               <figcaption>Navigation, P<sub>t*</sub> at t* = 21, budget.</figcaption>
             </figure>
-            <figure class="figure figure-compact" data-view="panel" data-value="prim" hidden>
+            <figure class="figure figure-panel" data-view="panel" data-value="prim" hidden>
               <div class="figure-frame">
                 <img src="figures/pivot_self_opd/panel_primitiveskill.png" alt="Three robot manipulation frames around a timeout pivot.">
               </div>
               <figcaption>PrimitiveSkill, P<sub>t*</sub> at t* = 4, timeout.</figcaption>
             </figure>
-            <figure class="figure figure-compact" data-view="panel" data-value="svg" hidden>
+            <figure class="figure figure-panel" data-view="panel" data-value="svg" hidden>
               <div class="figure-frame">
                 <img src="figures/pivot_self_opd/panel_svg.png" alt="Three SVG canvases around a timeout pivot.">
               </div>
               <figcaption>SVG, P<sub>t*</sub> at t* = 1, timeout.</figcaption>
             </figure>
+            </div>
 
             <details>
               <summary>Joint objective &amp; token-level loss</summary>
