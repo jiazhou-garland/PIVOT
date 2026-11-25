@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Rethinking OPSD/OPD for visual agents: counterfactual probes show that gains come mainly from rolling back to the pivot step, with skill prompts adding little. PIVOT bakes that state rollback into the weights with zero test-time overhead.">
+  <meta name="description" content="PIVOT: On-Policy Self-Distillation via Pivot-Grounded Visual Hindsight for Multi-Turn VLM Agents. Resolves the Pivot Credit Assignment Dilemma by unifying Analyzer, Teacher, and Student within shared policy parameters with zero test-time overhead.">
   <meta name="theme-color" content="#f8f6f0">
-  <meta property="og:title" content="Rethinking OPSD/OPD: Visual Agents Need Precise State Rollback">
-  <meta property="og:description" content="Skill hints help a little. State rollback at the pivot step does most of the work. PIVOT internalizes that state rollback into one VLM and ships with zero extra latency.">
+  <meta property="og:title" content="PIVOT: On-Policy Self-Distillation via Pivot-Grounded Visual Hindsight for Multi-Turn VLM Agents">
+  <meta property="og:description" content="Counterfactual rollback probes uncover the Pivot Credit Assignment Dilemma. PIVOT unifies Analyzer, Teacher, and Student in one VLM to distill visual-diagnostic hindsight onto failed tokens without rollbacks or test-time overhead.">
   <meta property="og:type" content="article">
-  <title>Rethinking OPSD/OPD: Visual Agents Need Precise State Rollback · PIVOT</title>
+  <title>PIVOT: On-Policy Self-Distillation via Pivot-Grounded Visual Hindsight for Multi-Turn VLM Agents</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,450;1,6..72,500;1,6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=42">
+  <link rel="stylesheet" href="styles.css?v=49">
   <script>
     document.documentElement.classList.add("js");
     try {
@@ -34,11 +34,11 @@
         <span>PIVOT</span>
       </a>
       <div class="nav-center">
-        <a href="#puzzle">GRPO stall</a>
-        <a href="#probe">Probe</a>
+        <a href="#analysis">Analysis</a>
+        <a href="#probes">Probes</a>
         <a href="#method">PIVOT</a>
-        <a href="#evidence">Results</a>
-        <a href="#sentence">Outlook</a>
+        <a href="#experiments">Experiments</a>
+        <a href="#conclusion">Conclusion</a>
         <a href="#citation">BibTeX</a>
       </div>
       <div class="nav-actions">
@@ -57,32 +57,14 @@
 
   <main id="main">
     <section class="hero" id="top">
-      <h1 class="hero-title reveal">Rethinking OPSD/OPD: Visual Agents Need <em>Precise State Rollback</em>, Not Fancy Prompts</h1>
+      <h1 class="hero-title reveal">PIVOT: On-Policy Self-Distillation via <em>Pivot-Grounded Visual Hindsight</em> for Multi-Turn VLM Agents</h1>
       <div class="hero-badges reveal" aria-label="Links">
         <a class="hero-badge is-live" href="https://arxiv.org/abs/2609.35303" target="_blank" rel="noopener noreferrer">arXiv</a>
         <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">Code (Coming Soon)</span>
         <span class="hero-badge is-soon" aria-disabled="true" title="Coming soon">HF Models (Coming Soon)</span>
         <a class="hero-badge is-live" href="https://github.com/jiazhou-garland/PIVOT">Project page</a>
       </div>
-      <div class="hero-copy reveal">
-        <aside class="hero-highlight">
-          <p>As VLMs move into embodied and multi-turn agents, GRPO-style post-training looks like the natural fix. In practice it often stalls: one bad pivot turn can sink a long trajectory, while group returns stay too coarse (or go silent) to name that turn.</p>
-          <p>Methods leveraging hindsight feedback, such as On-Policy Distillation (OPD) and On-Policy Self-Distillation (OPSD), seemed to help. Our counterfactual probes show the gains come <strong>mainly from physically restoring the environment at the pivot step</strong>. Text skill hints add little on top. Real deployments cannot rewind the world on demand.</p>
-          <p><strong>PIVOT</strong> answers that rollback paradox: one VLM plays Analyzer, Teacher, and Student in training, then ships as a plain Student with <strong>0.90 (+8%)</strong> on Qwen2.5-VL-3B across five visual agent tasks, and zero extra test-time cost.</p>
-        </aside>
-      </div>
-
-      <div class="lab reveal" aria-label="Teaser animation of a failed rollout and its pivot step">
-        <!--
-          Static video assets for the Teaser (place files here before publish):
-            blog/static/videos/teaser_animation.mp4
-            blog/static/videos/teaser_animation.webm
-            blog/static/images/teaser_poster.png
-          On the GitHub Pages repo (PIVOT), the same paths are relative to index.html:
-            static/videos/teaser_animation.mp4
-            static/videos/teaser_animation.webm
-            static/images/teaser_poster.png
-        -->
+      <div class="lab reveal" aria-label="PIVOT showcase: pivot step, feasibility, and credit assignment">
         <div class="lab-video-frame">
           <video
             class="lab-video"
@@ -92,614 +74,579 @@
             playsinline
             webkit-playsinline
             preload="auto"
-            poster="static/images/teaser_poster.png?v=13"
-            aria-label="Animated teaser of the pivot-step trajectory across four RL environments"
+            poster="static/images/pivot_showcase_poster.png?v=15"
+            aria-label="Showcase video: FrozenLake step view, feasible prefix versus pivot step, and credit assignment for Vanilla GRPO versus PIVOT"
           >
-            <source src="static/videos/teaser_animation.mp4?v=13" type="video/mp4">
-            <source src="static/videos/teaser_animation.webm?v=13" type="video/webm">
-            Your browser does not support HTML5 video. See the project page for the static schematic.
+            <source src="static/videos/pivot_showcase_en.mp4?v=15" type="video/mp4">
+            Your browser does not support HTML5 video.
           </video>
         </div>
-        <div class="lab-note">
-          <svg viewBox="0 0 32 20" aria-hidden="true"><path d="M2 4c9 0 7 12 18 12h9M25 12l4 4-4 4"></path></svg>
-          <p data-step-note><strong>Pivot step.</strong> Across Sokoban, FrozenLake, Navigation, and PrimitiveSkill, the first unrecoverable action (deadlock, blocked path, or wrong target) ends the feasible region.</p>
-        </div>
-        <div class="lab-footer">
-          <span><i class="legend-dot"></i> Still recoverable</span>
-          <span><i class="legend-dot update"></i> First unrecoverable action</span>
-        </div>
       </div>
-    </section>
-
-    <section class="story reveal" aria-labelledby="story-title">
-      <h2 id="story-title">The whole story</h2>
-      <ol>
-        <li>
-          <span>01</span>
-          <p>GRPO grades the whole paper, not the wrong step. When every sample fails, the model goes silent; when a signal remains, it still cannot name the pivot turn.</p>
-        </li>
-        <li>
-          <span>02</span>
-          <p>OPD/OPSD look like better prompting. Probes show the lift comes mainly from a state rollback to <em>t*</em>. Skill text is a smaller bonus, and one step late collapses recovery.</p>
-        </li>
-        <li>
-          <span>03</span>
-          <p>PIVOT puts that state rollback inside the weights: one model diagnoses, re-scores, and acts. At test time only the Student remains.</p>
-        </li>
-        <li>
-          <span>04</span>
-          <p>On five visual agent tasks, full PIVOT reaches 0.90 / 0.92, beats prior SOTA, and trains faster than Vanilla-GRPO while skipping a heavy external teacher.</p>
-        </li>
-      </ol>
     </section>
 
     <div class="layout">
       <aside class="toc" aria-label="On this page">
         <p>On this page</p>
         <ol>
-          <li><a href="#puzzle">01 When GRPO stalls</a></li>
-          <li><a href="#probe">02 What the probe reveals</a></li>
-          <li><a href="#method">03 Putting state rollback in the weights</a></li>
-          <li><a href="#evidence">04 Results across five tasks</a></li>
-          <li><a href="#sentence">05 Findings, solution, outlook</a></li>
+          <li><a href="#analysis">01 Motivating analysis</a></li>
+          <li><a href="#probes">02 Counterfactual probes</a></li>
+          <li><a href="#dilemma">03 Credit assignment dilemma</a></li>
+          <li><a href="#method">04 PIVOT framework</a></li>
+          <li><a href="#experiments">05 Experiments</a></li>
+          <li><a href="#conclusion">06 Conclusion</a></li>
         </ol>
       </aside>
 
       <article>
-        <section class="section" id="puzzle">
-          <p class="section-kicker">01 · When GRPO stalls</p>
-          <h2>When every rollout fails, the model learns nothing useful</h2>
-          <p class="lede">Think of GRPO as a harsh grader that only looks at the final score. In Sokoban, 3D navigation, or robot manipulation, one irreversible pivot turn can ruin a long episode, and the algorithm still cannot point to that turn.</p>
+        <section class="section" id="analysis">
+          <p class="section-kicker">Motivating Analysis</p>
+          <h2>Temporal Pivot Localization Drives Hindsight Recovery</h2>
 
-          <div class="defect-grid" role="list">
-            <article class="defect-card defect-card--silence" role="listitem">
-              <p class="defect-kicker"><i class="defect-dot silence" aria-hidden="true"></i> Failure mode A · σ = 0</p>
-              <h3>Zero-gradient silence</h3>
-              <p class="defect-issue">Sample eight trajectories under a weak policy. If every return matches, group variance is zero. The advantage vanishes, and the model gets <strong>no update at all</strong>, even when the failures are different mistakes.</p>
-              <dl class="defect-stats">
-                <div>
-                  <dt>48.3%</dt>
-                  <dd>Sokoban groups frozen</dd>
-                </div>
-                <div>
-                  <dt>16.5%</dt>
-                  <dd>PrimitiveSkill groups frozen</dd>
-                </div>
-              </dl>
-              <p class="defect-meta">Untrained Qwen2.5-VL-3B</p>
-            </article>
+          <div class="subsec" id="silence">
+            <h3>Zero-Gradient Silence and Coarse Credit</h3>
+            <p class="lede">GRPO normalizes episode returns across <em>N</em> rollouts into one scalar advantage A<sub>n</sub><sup>rl</sup> and applies it uniformly to every action token. Evaluating untrained Qwen2.5-VL-3B-Instruct across five VAGEN tasks (<em>N</em> = 8) exposes two bottlenecks:</p>
 
-            <article class="defect-card defect-card--coarse" role="listitem">
-              <p class="defect-kicker"><i class="defect-dot coarse" aria-hidden="true"></i> Failure mode B · σ &gt; 0</p>
-              <h3>Blunt, collective credit</h3>
-              <p class="defect-issue">Even with a −0.1 step penalty, GRPO still paints one scalar onto <strong>every action token</strong>. It scolds the agent for taking too long, and never isolates the fatal operation at <em>t*</em>.</p>
-              <dl class="defect-stats">
-                <div>
-                  <dt>σ &gt; 0</dt>
-                  <dd>Still episode-level</dd>
-                </div>
-                <div>
-                  <dt>t*</dt>
-                  <dd>Still unnamed</dd>
-                </div>
-              </dl>
-              <p class="defect-meta">Length penalty is not pivot diagnosis</p>
-            </article>
+            <div class="defect-grid" role="list">
+              <article class="defect-card defect-card--silence" role="listitem">
+                <p class="defect-kicker"><i class="defect-dot silence" aria-hidden="true"></i> Failure mode A · σ = 0</p>
+                <h3>Zero-Gradient Silence</h3>
+                <p class="defect-issue">Low baseline success on Sokoban (17.8%) and PrimitiveSkill (8.9%) creates frequent zero-variance groups where identical returns drive every advantage A<sub>n</sub><sup>rl</sup> to <strong>zero</strong> despite distinct mistakes.</p>
+                <dl class="defect-stats">
+                  <div>
+                    <dt>48.3%</dt>
+                    <dd>Sokoban groups with σ = 0</dd>
+                  </div>
+                  <div>
+                    <dt>16.5%</dt>
+                    <dd>PrimitiveSkill groups with σ = 0</dd>
+                  </div>
+                </dl>
+                <p class="defect-meta">Untrained Qwen2.5-VL-3B-Instruct (N = 8)</p>
+              </article>
+
+              <article class="defect-card defect-card--coarse" role="listitem">
+                <p class="defect-kicker"><i class="defect-dot coarse" aria-hidden="true"></i> Failure mode B · σ &gt; 0</p>
+                <h3>Coarse Episode-Level Credit</h3>
+                <p class="defect-issue">A −0.1 step penalty keeps FrozenLake and Navigation at 0.0% σ = 0, and SVG at 0.9%. Yet nonzero variance still grades <strong>entire trajectories</strong> by length or score instead of isolating the fatal step <em>t*</em>.</p>
+                <dl class="defect-stats">
+                  <div>
+                    <dt>0.0%</dt>
+                    <dd>FrozenLake &amp; Navigation, σ = 0</dd>
+                  </div>
+                  <div>
+                    <dt>0.9%</dt>
+                    <dd>SVG groups with σ = 0</dd>
+                  </div>
+                </dl>
+                <p class="defect-meta">Nonzero variance does not isolate the pivot</p>
+              </article>
+            </div>
+
+            <blockquote class="pull">
+              <span>Takeaway</span>
+              Uniform failure returns (σ = 0) silence GRPO updates entirely; even when σ &gt; 0, episode-level credit never isolates the first unrecoverable step <em>t*</em>.
+            </blockquote>
           </div>
 
-          <details class="figure-fold">
-            <summary>What the returns look like</summary>
-            <figure class="figure credit-figure">
-              <div class="fig-badges" aria-label="Figure legend">
-                <span class="fig-badge fig-badge--silence"><i aria-hidden="true"></i> Red · σ = 0 · silence</span>
-                <span class="fig-badge fig-badge--coarse"><i aria-hidden="true"></i> Blue · σ &gt; 0 · blunt credit</span>
-              </div>
-              <div class="figure-frame">
-                <img src="figures/fig_sec2_motivation_a.png?v=3" alt="Failed-rollout return distributions. Red marks zero-gradient silence (σ=0); blue marks coarse episode-level credit (σ&gt;0).">
-              </div>
-              <figcaption>Failed return distributions across benchmarks. Red groups give GRPO no signal. Blue groups still only score the whole episode.</figcaption>
-            </figure>
-          </details>
+          <div class="subsec" id="probes">
+            <h3>Counterfactual Rollback Probes: Local Suffix Rollback over Full-Horizon Restart</h3>
+            <p class="lede">To test what actually drives hindsight recovery in OPD/OPSD, we probe failed rollouts of untrained Qwen2.5-VL-3B-Instruct along two axes: local suffix rollback at <em>t*</em> and full-horizon restart from <em>t</em> = 0 with diagnostic hints.</p>
 
-          <blockquote class="pull">
-            <span>Next question</span>
-            OPD/OPSD appears to solve credit assignment failure for GRPO, but do the textual skill hints as the hindsight actually matter?
-          </blockquote>
-        </section>
-
-        <section class="section" id="probe">
-          <p class="section-kicker">02 · What the probe reveals</p>
-          <h2>Skill hints help a little. State rollback does most of the work.</h2>
-          <p class="lede">Many people assumed OPD/OPSD work because a stronger teacher writes better skill text. We treated that as a hypothesis to test, not a conclusion.</p>
-          <p>We define the <strong>pivot step</strong> <em>t*</em> as the first action that leaves the remaining budget infeasible. Then we rewind failed rollouts and resample one suffix from the same base policy, changing only two knobs: <em>when</em> we restore, and <em>whether</em> we append a skill hint.</p>
-          <figure class="formula">
-            <p>Pivot step</p>
-            <p class="eq">t* = min { t : Feas(s<sub>t+1</sub>, T − t − 1) = 0 }</p>
-            <dl class="syms">
-              <div><dt>t*</dt><dd>first action that makes the remaining budget infeasible, else T−1</dd></div>
-              <div><dt>Feas(s, k)</dt><dd>1 if state s can still reach the goal in k steps</dd></div>
-              <div><dt>s<sub>t+1</sub></dt><dd>state after action a<sub>t</sub></dd></div>
-              <div><dt>T</dt><dd>realized trajectory length</dd></div>
-            </dl>
-          </figure>
-          <p>Four arms share the same failed starts: <strong>no-hint</strong> at <em>t*</em>, <strong>no-hint</strong> at <em>t*+1</em>, <strong>3B-self</strong> (self-written skill), and <strong>8B-teacher</strong> (Qwen3-VL-8B skill).</p>
-
-          <div class="finding-grid" role="list">
-            <article class="finding-card" role="listitem">
-              <p class="finding-kicker">Finding 1</p>
-              <h3>State rollback leads</h3>
-              <p>Restore the physical state at <em>t*</em> with no text at all, and suffix return lift ΔR already covers most of the gain (3.3% to 56.6% across tasks). The same restore also cuts zero-variance groups (Sokoban 48.3% to 41.7%, PrimitiveSkill 16.5% to 3.8%), bringing back a usable GRPO signal where the baseline was silent.</p>
-            </article>
-            <article class="finding-card" role="listitem">
-              <p class="finding-kicker">Finding 2</p>
-              <h3>Skill text is secondary</h3>
-              <p>Self-written hints differ from no-hint by at most 2.6 points. An 8B teacher adds only 0.3 to 3.5 on top of the 3B self hint. On Navigation, plain no-hint at <em>t*</em> is already best.</p>
-            </article>
-            <article class="finding-card" role="listitem">
-              <p class="finding-kicker">Finding 3</p>
-              <h3>One step late collapses recovery</h3>
-              <p>Rewind at <em>t*+1</em> instead of <em>t*</em>, and ΔR drops hard (Sokoban 3.3% to 0.9%, PrimitiveSkill 17.7% to 8.3%, FrozenLake 18.2% to 8.1%). Timing precision is the key, not prompt polish.</p>
-            </article>
-          </div>
-
-          <div class="probe-figures">
             <figure class="figure">
               <div class="figure-frame">
-                <img src="figures/fig_sec2_motivation_b.png?v=5" alt="Suffix-return lift rate under four rollback probes across five tasks.">
+                <img src="figures/fig_sec2_motivation.png?v=14" alt="Counterfactual Rollback Probes: failed returns, local suffix rollback lift, full-horizon restart lift, and zero-variance group rate.">
               </div>
-              <figcaption>Suffix return lift ΔR (%). Same failed starts, one resampled suffix, four probe arms.</figcaption>
+              <figcaption>(a) Base policy failed returns R(τ) separating σ = 0 (red) and σ &gt; 0 (blue) groups. (b) Local suffix lift ΔR (%) at t* and t*+1 with or without hints. (c) Full-horizon lift ΔR (%) from t = 0. (d) Zero-variance group rate (σ = 0, %) on Sokoban and PrimitiveSkill across both probe regimes.</figcaption>
             </figure>
-            <figure class="figure">
-              <div class="figure-frame">
-                <img src="figures/fig_sec2_motivation_c.png?v=5" alt="Zero-variance group rate on Sokoban and PrimitiveSkill under baseline and four rollback probes.">
-              </div>
-              <figcaption>Zero-variance group rate (%). Baseline versus the four rollback probes.</figcaption>
-            </figure>
+
+            <div class="defect-grid" role="list">
+              <article class="defect-card" role="listitem">
+                <p class="defect-kicker regime-label">Regime 1 · Local Suffix Rollback</p>
+                <h3>Restore simulator state to s<sub>t*</sub></h3>
+                <p class="defect-issue">Compares <strong>no-hint t*</strong> (pure reset), <strong>no-hint t*+1</strong> (one step late), and <strong>diagnostic-self / teacher t*</strong> (appending π<sub>base</sub> or Qwen3-VL-8B hints after resetting).</p>
+              </article>
+              <article class="defect-card" role="listitem">
+                <p class="defect-kicker regime-label">Regime 2 · Full-Horizon Restart</p>
+                <h3>Restart from t = 0 without intermediate resets</h3>
+                <p class="defect-issue">Compares <strong>no-hint</strong>, <strong>generic</strong> planning advice, and <strong>diagnostic-self / teacher t<sub>0</sub></strong> (injecting the same pivot-grounded hints at turn 0 with no reset).</p>
+              </article>
+            </div>
+
+            <details>
+              <summary>Formal definitions: pivot step t* &amp; return lift rate ΔR</summary>
+              <figure class="formula">
+                <p class="eq-label">Pivot Step</p>
+                <p class="eq">t* = min( { t ∈ [0, T − 1] : Feas(s<sub>t+1</sub>, T − t − 1) = 0 } ∪ { T − 1 } )</p>
+                <p class="eq-label">Return Lift Rate</p>
+                <p class="eq">ΔR = | { τ ∈ N<sup>−</sup> : R(τ̃<sub>t:</sub>) &gt; R(τ<sub>t:</sub>) } | / |N<sup>−</sup>|</p>
+                <dl class="syms">
+                  <div><dt>Feas(s, k)</dt><dd>1 if state s can still reach the goal within k steps</dd></div>
+                  <div><dt>τ̃<sub>t:</sub> ~ π<sub>base</sub></dt><dd>single resampled continuation (n = 1) from t = t* (local suffix) or t = 0 (full horizon)</dd></div>
+                  <div><dt>N<sup>−</sup></dt><dd>failed rollouts of untrained Qwen2.5-VL-3B-Instruct shared across all probe arms</dd></div>
+                </dl>
+              </figure>
+            </details>
+
+            <h4>Empirical Findings</h4>
+            <div class="finding-grid" role="list">
+              <article class="finding-card" role="listitem">
+                <p class="finding-kicker">Finding 1 · Local Suffix</p>
+                <h3>Exact timing governs local recovery</h3>
+                <p>Resetting to <em>t*</em> with <strong>no-hint</strong> lifts ΔR by 3.3%–56.6%, while delaying one step (<em>t*+1</em>) collapses gains (PrimitiveSkill 18.4% → 8.7%; Sokoban 3.3% → 0.9%). Once restored, textual hints add little (≤ 2.2 points on most tasks).</p>
+              </article>
+              <article class="finding-card" role="listitem">
+                <p class="finding-kicker">Finding 2 · Full Horizon</p>
+                <h3>Pivot diagnostics guide global restarts</h3>
+                <p>Without resets (<em>t</em> = 0), pivot-grounded hints beat both <strong>no-hint</strong> and <strong>generic</strong> prompts on structured tasks (Sokoban 15.9% vs. 13.7% / 11.6%; PrimitiveSkill 44.7% vs. 40.2%). On open-ended Navigation, they still beat generic advice (48.6% vs. 45.1%).</p>
+              </article>
+              <article class="finding-card" role="listitem">
+                <p class="finding-kicker">Finding 3 · Silent Groups</p>
+                <h3>Both regimes reopen GRPO signal</h3>
+                <p>Both regimes cut σ = 0 group rates on sparse-reward tasks, dropping Sokoban from 48.3% to 32.8% and PrimitiveSkill from 16.5% to 0.5% (local-suffix probes: 37.8–41.7% and 3.8–6.0%).</p>
+              </article>
+            </div>
+
+            <blockquote class="pull">
+              <span>Takeaway</span>
+              Local recovery depends strictly on exact timing at <em>t*</em> (making text redundant after a reset); without resets, pivot-grounded diagnostics outperform unguided restarts and generic prompts.
+            </blockquote>
           </div>
 
-          <details>
-            <summary>What each probe arm is allowed to see</summary>
-            <p>All arms start from the same failed untrained Qwen2.5-VL-3B rollouts and resample one suffix with that base policy. <strong>no-hint</strong> restores <em>s</em><sub>t*</sub> and adds nothing to the prompt. <strong>no-hint (t*+1)</strong> restores one step later. <strong>3B-self</strong> appends failure mode <em>m*</em> and a skill from π<sub>base</sub>. <strong>8B-teacher</strong> appends a skill from Qwen3-VL-8B.</p>
-          </details>
+          <div class="subsec" id="dilemma">
+            <h3>Resolving the Pivot Credit Assignment Dilemma via Visual Grounding</h3>
+            <blockquote class="pull">
+              <span>Pivot Credit Assignment Dilemma</span>
+              Local rollbacks at <em>t*</em> isolate recovery but require costly or unavailable simulator resets; full-horizon restarts avoid resets but waste rollouts on valid prefixes (<em>t</em> &lt; <em>t*</em>) and dilute credit.
+            </blockquote>
+            <p class="lede"><em>Can we embed pivot-grounded visual diagnostics directly into token-level updates without rollbacks or extra rollouts?</em></p>
 
-          <blockquote class="pull">
-            <span>The catch</span>
-            Recovery wants a state rollback to <em>t*</em>. Real environments and online RL rarely allow one. That is the rollback paradox.
-          </blockquote>
+            <div class="finding-grid" role="list">
+              <article class="finding-card" role="listitem">
+                <p class="finding-kicker">Principle I</p>
+                <h3>Non-Invasive Pivot Grounding</h3>
+                <p>Localize <em>t*</em> and diagnose failures directly from observable visual histories, with no hidden state access or resets.</p>
+              </article>
+              <article class="finding-card" role="listitem">
+                <p class="finding-kicker">Principle II</p>
+                <h3>Counterfactual Credit Concentration</h3>
+                <p>Convert localized visual hindsight into token-level updates on existing failed rollouts without re-sampling.</p>
+              </article>
+              <article class="finding-card" role="listitem">
+                <p class="finding-kicker">Principle III</p>
+                <h3>Zero Test-Time Overhead</h3>
+                <p>Internalize hindsight into policy weights so inference runs as a standalone Student with no extra models or prompts.</p>
+              </article>
+            </div>
+          </div>
         </section>
 
-        <section class="section" id="method" data-also="motivation">
-          <p class="section-kicker">03 · Putting state rollback in the weights</p>
-          <h2>How PIVOT turns state rollback into parameters</h2>
-          <p class="lede">The probe leaves a paradox: recovery needs a restore at <em>t*</em>, yet online RL cannot restart the world, and deployment cannot carry an external teacher plus long skill prompts.</p>
-          <blockquote class="pull">
-            <span>Rollback paradox</span>
-            Recovery comes mainly from rolling the state back to the pivot. Explicit physical state rollbacks are too costly online, and impossible in many real settings.
-          </blockquote>
-          <p>PIVOT’s answer is one VLM π<sub>θ</sub> that plays three roles in training, then ships as a plain Student at test time: find the pivot without resetting, move credit onto tokens, and drop the extras at deploy.</p>
+        <section class="section" id="method">
+          <p class="section-kicker">Method</p>
+          <h2>PIVOT: On-Policy Self-Distillation via Pivot-Grounded Visual Hindsight</h2>
+          <p class="lede">One shared policy π<sub>θ</sub> unifies Analyzer, Privileged Teacher, and Student during training, then ships strictly as an unprivileged Student with no rollbacks and no test-time overhead.</p>
+
           <figure class="figure">
             <div class="figure-frame">
-              <img src="figures/Framework.png" alt="PIVOT architecture: Stage I analyzer cold-start, Stage II three unified roles, and zero-overhead inference.">
+              <img src="figures/Framework.png" alt="PIVOT architecture overview: Stage I SFT warm-up, Stage II unified three-role RL with visual-diagnostic hindsight, and zero-overhead Student inference.">
             </div>
-            <figcaption>Stage I cold-starts the Analyzer on collages and action logs. Stage II trains on the original failed rollouts under a privileged panel. Inference keeps only the Student.</figcaption>
+            <figcaption>Stage I cold-starts the Analyzer on visual collages and action logs. Stage II builds a 3-panel visual hindsight crop around the predicted pivot so a detached Teacher re-scores the original failed tokens. Inference keeps only the Student.</figcaption>
           </figure>
 
           <div class="method-split">
+            <div class="method-col">
+              <p class="panel-kicker">Roles</p>
+              <div class="roles">
+                <article class="role analyzer">
+                  <strong>Role 1 · Diagnostic Analyzer</strong>
+                  <p>Reads the visual collage and action log to predict (t̂, m̂, r̂) without hidden state, and crops the 3-panel neighborhood P<sub>t̂</sub> = [o<sub>t̂−1</sub>, o<sub>t̂</sub>, o<sub>t̂+1</sub>].</p>
+                </article>
+                <article class="role teacher">
+                  <strong>Role 2 · Privileged Teacher</strong>
+                  <p>Detached (stop-gradient) evaluator that re-scores the Student’s original failed tokens under privileged hindsight h̃<sub>t</sub> = (p, h<sub>t</sub>), with no extra rollouts.</p>
+                </article>
+                <article class="role student">
+                  <strong>Role 3 · Acting Student</strong>
+                  <p>Acts on ordinary history h<sub>t</sub> and trains with GRPO + confidence-gated OPD on failed rollouts, suppressing high-risk pivot tokens even when σ = 0.</p>
+                </article>
+              </div>
+            </div>
             <div class="method-col">
               <p class="panel-kicker">Stages</p>
               <div class="steps">
                 <article class="step-card">
                   <b>I</b>
                   <div>
-                    <h3>Cold-start the Analyzer</h3>
-                    <p>Turn each failed rollout into a visual collage plus action log. SFT teaches the model to output the pivot <em>t*</em>, failure mode, and an optional skill. No latent state. About 960 to 1.7k accepted trajectories per environment, then θ←θ<sub>sft</sub>.</p>
+                    <h3>Stage I (SFT): Pivot Grounding</h3>
+                    <p>3-epoch SFT on offline diagnostic triplets (t*, m*, r*) from visual collages and action logs (959–1,719 trajectories per task) to initialize θ<sub>sft</sub>.</p>
                   </div>
                 </article>
                 <article class="step-card">
                   <b>II</b>
                   <div>
-                    <h3>Internalize state rollback</h3>
-                    <p>Each update samples eight rollouts. On a failure the Analyzer predicts the pivot and crops a three-frame visual panel. A stop-gradient Teacher re-scores the same failed tokens as if that panel were in context. No simulator reset required.</p>
+                    <h3>Stage II (RL): Token Re-Weighting</h3>
+                    <p>250 RL updates per task (N = 8; N = 4 on PrimitiveSkill) from θ<sub>sft</sub>, distilling visual-diagnostic hindsight onto failed tokens via gated OPD.</p>
                   </div>
                 </article>
                 <article class="step-card">
                   <b>∅</b>
                   <div>
-                    <h3>Deploy the Student only</h3>
-                    <p>Strip Analyzer and Teacher. The agent runs as π<sub>θ</sub> on ordinary history: zero extra compute, zero extra parameters, zero skill prompts.</p>
+                    <h3>Inference: Standalone Student</h3>
+                    <p>Strips Analyzer and Teacher; deploys purely as π<sub>θ</sub>(· | h<sub>t</sub>) with zero extra compute, parameters, or prompts.</p>
                   </div>
                 </article>
               </div>
             </div>
-            <div class="method-col">
-              <p class="panel-kicker">Roles</p>
-              <div class="roles">
-                <article class="role analyzer">
-                  <strong>Analyzer</strong>
-                  <p>Reads the full visual collage and action log. Finds the pivot and failure mode without peeking at hidden simulator state.</p>
-                </article>
-                <article class="role teacher">
-                  <strong>Privileged Teacher</strong>
-                  <p>Re-scores the Student’s failed tokens under a three-frame panel around the predicted pivot. Stop-gradient. Same tokens, as if the state rollback were visible.</p>
-                </article>
-                <article class="role student">
-                  <strong>Student</strong>
-                  <p>Acts on ordinary history. Trains with GRPO plus a confidence-gated OPD term on failed rollouts, so silent GRPO groups can still move.</p>
-                </article>
-              </div>
-            </div>
           </div>
 
-          <figure class="formula">
-            <p>Joint objective</p>
-            <p class="eq">ℒ = ℒ<sub>GRPO</sub> + λ ℒ<sub>gated-OPD</sub></p>
-            <figcaption>λ = 0.01. Confidence-gated OPD (<a href="https://arxiv.org/abs/2306.13649" target="_blank" rel="noopener noreferrer">Agarwal et al., 2024</a>; <a href="https://arxiv.org/abs/2605.15155" target="_blank" rel="noopener noreferrer">Lu et al., 2026</a>) applies only to failed trajectories, with a sigmoid gate (β = 5). When GRPO is silent, this term can still move the policy. Training runs for 250 updates.</figcaption>
-          </figure>
+          <div class="subsec">
+            <h3>Stage I (SFT): Non-Invasive Failure Diagnosis for Pivot Grounding</h3>
+            <p>Each failed trajectory is labeled with a diagnostic triplet (<em>t*</em>, <em>m*</em>, <em>r*</em>) and paired strictly with observable inputs—a step-indexed visual collage C(τ), action sequence a<sub>0:T−1</sub>, and prompt <em>q</em>. Autoregressive SFT produces θ<sub>sft</sub> with non-invasive pivot grounding.</p>
+
+            <h4>Analyzer SFT Examples</h4>
+            <div class="seg" data-switch="sft" role="group" aria-label="Analyzer SFT collage examples">
+              <button type="button" data-value="sokoban" aria-pressed="true">Sokoban</button>
+              <button type="button" data-value="frozen" aria-pressed="false">FrozenLake</button>
+              <button type="button" data-value="nav" aria-pressed="false">Navigation</button>
+              <button type="button" data-value="prim" aria-pressed="false">PrimitiveSkill</button>
+              <button type="button" data-value="svg" aria-pressed="false">SVG</button>
+            </div>
+            <figure class="figure" data-view="sft" data-value="sokoban">
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/sokoban/collage_00.png" alt="Sokoban Analyzer SFT example: visual trajectory collage, action log, and JSON target.">
+              </div>
+              <figcaption>Sokoban. Step-indexed visual collage and action log (left) paired with the JSON diagnostic triplet target (right); pivot line highlighted in the log.</figcaption>
+            </figure>
+            <figure class="figure" data-view="sft" data-value="frozen" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/frozenlake/collage_09.png" alt="FrozenLake Analyzer SFT example at t* = 6, timeout.">
+              </div>
+              <figcaption>FrozenLake, t* = 6, timeout. Visual collage, compact action log, and JSON diagnostic target.</figcaption>
+            </figure>
+            <figure class="figure" data-view="sft" data-value="nav" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/navigation/collage_03.png" alt="Navigation Analyzer SFT example at t* = 23, budget.">
+              </div>
+              <figcaption>Navigation, t* = 23, budget. Action log truncated around the pivot in denser traces.</figcaption>
+            </figure>
+            <figure class="figure" data-view="sft" data-value="prim" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/primitiveskill/collage_09.png" alt="PrimitiveSkill Analyzer SFT example at t* = 3, timeout.">
+              </div>
+              <figcaption>PrimitiveSkill, t* = 3, timeout. Step-indexed visual collage, highlighted action log, and JSON target.</figcaption>
+            </figure>
+            <figure class="figure" data-view="sft" data-value="svg" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/svg/collage_06.png" alt="SVG Analyzer SFT example: fork-and-knife target, repeated wrong SVG, timeout at step 1.">
+              </div>
+              <figcaption>SVG, t* = 1, timeout. The same incorrect canvas is submitted twice instead of drawing the fork and knife.</figcaption>
+            </figure>
+
+            <details>
+              <summary>Analyzer SFT splits</summary>
+              <div class="table-wrap">
+                <table class="ablation-table">
+                  <caption>90/10 train/val splits for the 3B SFT packs. The 2B backbones follow the same recipe.</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Environment</th>
+                      <th scope="col">Accepted</th>
+                      <th scope="col">Train</th>
+                      <th scope="col">Val</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Sokoban</td><td>1170</td><td>1053</td><td>117</td></tr>
+                    <tr><td>FrozenLake</td><td>1375</td><td>1237</td><td>138</td></tr>
+                    <tr><td>Navigation</td><td>959</td><td>863</td><td>96</td></tr>
+                    <tr><td>PrimitiveSkill</td><td>1677</td><td>1509</td><td>168</td></tr>
+                    <tr><td>SVG</td><td>1719</td><td>1547</td><td>172</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            <details>
+              <summary>Failure modes the Analyzer is asked to name</summary>
+              <ul>
+                <li>Sokoban and FrozenLake: <code>timeout</code> if the goal is still reachable with unlimited steps, <code>deadlock</code> if it is not.</li>
+                <li>Navigation: <code>format</code>, <code>blocked</code>, <code>stagnation</code>, or <code>budget</code>.</li>
+                <li>PrimitiveSkill: <code>timeout</code>, <code>format</code>, <code>wrong target</code>, or <code>order error</code>.</li>
+                <li>SVG: the solver always labels the last scored canvas as <code>timeout</code>; the Analyzer prompt still offers the <code>timeout</code> / <code>deadlock</code> pair.</li>
+              </ul>
+            </details>
+          </div>
+
+          <div class="subsec">
+            <h3>Stage II (RL): Counterfactual Token Re-Weighting via Visual-Diagnostic Hindsight</h3>
+            <p>On each failed rollout, the 3-panel visual crop P<sub>t̂</sub> = [o<sub>t̂−1</sub>, o<sub>t̂</sub>, o<sub>t̂+1</sub>] pairs with (m̂, r̂) to form privileged hindsight <em>p</em>. The detached Teacher re-scores the Student’s original failed tokens under (<em>p</em>, h<sub>t</sub>), suppressing high-risk pivot tokens while leaving valid prefixes intact—even when GRPO advantages vanish (σ = 0). At test time, only the standalone Student remains.</p>
+
+            <h4>Teacher Hindsight 3-Panel Visual Context</h4>
+            <div class="seg" data-switch="panel" role="group" aria-label="Teacher local 3-panel visual hindsight examples">
+              <button type="button" data-value="sokoban" aria-pressed="true">Sokoban</button>
+              <button type="button" data-value="frozen" aria-pressed="false">FrozenLake</button>
+              <button type="button" data-value="nav" aria-pressed="false">Navigation</button>
+              <button type="button" data-value="prim" aria-pressed="false">PrimitiveSkill</button>
+              <button type="button" data-value="svg" aria-pressed="false">SVG</button>
+            </div>
+            <figure class="figure figure-compact" data-view="panel" data-value="sokoban">
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/panel_sokoban.png" alt="Three Sokoban frames around a deadlock pivot.">
+              </div>
+              <figcaption>Sokoban, P<sub>t*</sub> at t* = 4, deadlock.</figcaption>
+            </figure>
+            <figure class="figure figure-compact" data-view="panel" data-value="frozen" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/panel_frozenlake.png" alt="Three FrozenLake frames around a timeout pivot.">
+              </div>
+              <figcaption>FrozenLake, P<sub>t*</sub> at t* = 6, timeout.</figcaption>
+            </figure>
+            <figure class="figure figure-compact" data-view="panel" data-value="nav" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/panel_navigation.png" alt="Three navigation frames around a budget pivot.">
+              </div>
+              <figcaption>Navigation, P<sub>t*</sub> at t* = 21, budget.</figcaption>
+            </figure>
+            <figure class="figure figure-compact" data-view="panel" data-value="prim" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/panel_primitiveskill.png" alt="Three robot manipulation frames around a timeout pivot.">
+              </div>
+              <figcaption>PrimitiveSkill, P<sub>t*</sub> at t* = 4, timeout.</figcaption>
+            </figure>
+            <figure class="figure figure-compact" data-view="panel" data-value="svg" hidden>
+              <div class="figure-frame">
+                <img src="figures/pivot_self_opd/panel_svg.png" alt="Three SVG canvases around a timeout pivot.">
+              </div>
+              <figcaption>SVG, P<sub>t*</sub> at t* = 1, timeout.</figcaption>
+            </figure>
+
+            <details>
+              <summary>Joint objective &amp; token-level loss</summary>
+              <figure class="formula">
+                <p class="eq-label">GRPO Objective</p>
+                <p class="eq">ℒ<sub>GRPO</sub>(θ) = −𝔼[ m<sub>act</sub> min( ρ<sub>t</sub> A<sup>rl</sup>, clip(ρ<sub>t</sub>, 1 − ε, 1 + ε) A<sup>rl</sup> ) ]</p>
+                <p class="eq-label">Confidence-Gated OPD</p>
+                <p class="eq">ℒ<sub>OPD</sub>(θ) = 𝔼[ 𝕀[R(τ) &lt; R<sub>succ</sub>] · m<sub>act</sub> · g<sub>t</sub> · (sg[ℓ<sub>t</sub><sup>tea</sup>] − ℓ<sub>t</sub><sup>stu</sup>) ]</p>
+                <p class="eq-label">Joint Objective</p>
+                <p class="eq">ℒ(θ) = ℒ<sub>GRPO</sub>(θ) + λ<sub>opd</sub> ℒ<sub>OPD</sub>(θ)</p>
+                <dl class="syms">
+                  <div><dt>g<sub>t</sub> = σ(β<sub>opd</sub> δ<sub>t</sub>)</dt><dd>sigmoid confidence gate (β<sub>opd</sub> = 5) on privileged log-probability gap δ<sub>t</sub> = ℓ<sub>t</sub><sup>tea</sup> − ℓ<sub>t</sub><sup>stu</sup></dd></div>
+                  <div><dt>λ<sub>opd</sub> = 0.01</dt><dd>balances RL exploration against token-level self-distillation (<a href="https://arxiv.org/abs/2306.13649" target="_blank" rel="noopener noreferrer">Agarwal et al., 2024</a>; <a href="https://arxiv.org/abs/2605.15155" target="_blank" rel="noopener noreferrer">Lu et al., 2026</a>)</dd></div>
+                  <div><dt>Failure mask</dt><dd>applies to failed rollouts (R(τ) &lt; R<sub>succ</sub>); SVG has no binary success bit, so every SVG trajectory is distilled</dd></div>
+                  <div><dt>Training budget</dt><dd>Stage II runs 250 online RL updates on every environment, including Sokoban</dd></div>
+                </dl>
+              </figure>
+            </details>
+          </div>
+        </section>
+
+        <section class="section" id="experiments">
+          <p class="section-kicker">Experiments</p>
+          <h2>Evaluation Across Five Multi-Turn VLM Benchmarks</h2>
+          <p class="lede">Evaluated across cognitive grid puzzles, embodied 3D control, and generative SVG reconstruction on three backbones, with zero inference-time overhead.</p>
+
           <details>
-            <summary>Failure modes the Analyzer is asked to name</summary>
-            <ul>
-              <li>Sokoban and FrozenLake: timeout if the goal is still reachable with unlimited steps, deadlock if it is not.</li>
-              <li>Navigation: format, blocked, stagnation, or budget.</li>
-              <li>PrimitiveSkill: timeout, format, wrong target, or order error.</li>
-              <li>SVG: format, regression, stagnation, or mismatch on the last scored canvas.</li>
-            </ul>
+            <summary>Experimental setup (environments, baselines, variants &amp; implementation)</summary>
+            <div class="setup-grid" role="list">
+              <article class="setup-card" role="listitem">
+                <h4>Environments &amp; Metrics</h4>
+                <p>VAGEN suite across three paradigms: <strong>Cognitive Grid Puzzles</strong> (Sokoban, FrozenLake), <strong>Embodied 3D Control</strong> (Navigation, PrimitiveSkill), and <strong>Generative Reasoning</strong> (SVG). Puzzle and control tasks report Success Rate (SR); SVG reports composite DINO + DreamSim similarity.</p>
+              </article>
+              <article class="setup-card" role="listitem">
+                <h4>Backbones &amp; Reference Baselines</h4>
+                <p><strong>Qwen2.5-VL-3B-Instruct</strong>, <strong>Qwen3-VL-2B-Instruct</strong>, and <strong>Qwen3.5-VL-2B</strong>. Compared against <strong>Vanilla-GRPO</strong>, <strong>SFT-GRPO</strong> (θ<sub>sft</sub> without OPD), reproduced gated-OPD baseline <strong>SDAR</strong> (frozen Qwen2.5-VL-7B teacher, episode-level skills, all valid tokens), and world-model SOTA (<strong>VAGEN</strong>, <strong>GLANCE</strong>).</p>
+              </article>
+              <article class="setup-card" role="listitem">
+                <h4>PIVOT Variants &amp; Ablation Arms</h4>
+                <p>All start from θ<sub>sft</sub> and vary Teacher context <em>p</em>: <strong>P</strong> (panel), <strong>M</strong> (mode), <strong>M+P</strong>, and <strong>M+P+R</strong> (full default with guidance skill), plus negative control <strong>M+P+Random+R</strong> with random pivot indices.</p>
+              </article>
+              <article class="setup-card" role="listitem">
+                <h4>Implementation Details</h4>
+                <p>Stage I runs 3-epoch SFT. Stage II runs <strong>250 RL updates</strong> on every environment (including Sokoban), applying confidence-gated OPD (λ = 0.01, β = 5) on failed trajectories (all trajectories on SVG).</p>
+              </article>
+            </div>
           </details>
-        </section>
 
-        <section class="section" id="credit">
-          <p class="section-kicker">Inside the recipe · Visual credit</p>
-          <h2>The panel is the internalized state rollback</h2>
-          <p class="lede">The Teacher never resets the simulator. A three-frame neighborhood around the predicted pivot is enough to re-score the original failed tokens.</p>
-          <div class="seg" data-switch="panel" role="group" aria-label="Visual panels">
-            <button type="button" data-value="sokoban" aria-pressed="true">Sokoban</button>
-            <button type="button" data-value="frozen" aria-pressed="false">FrozenLake</button>
-            <button type="button" data-value="nav" aria-pressed="false">Navigation</button>
-            <button type="button" data-value="prim" aria-pressed="false">PrimitiveSkill</button>
-            <button type="button" data-value="svg" aria-pressed="false">SVG</button>
-          </div>
-          <figure class="figure figure-compact" data-view="panel" data-value="sokoban">
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/panel_sokoban.png" alt="Three Sokoban frames around a deadlock pivot.">
-            </div>
-            <figcaption>Sokoban, t* = 4, deadlock.</figcaption>
-          </figure>
-          <figure class="figure figure-compact" data-view="panel" data-value="frozen" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/panel_frozenlake.png" alt="Three FrozenLake frames around a timeout pivot.">
-            </div>
-            <figcaption>FrozenLake, t* = 6, timeout.</figcaption>
-          </figure>
-          <figure class="figure figure-compact" data-view="panel" data-value="nav" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/panel_navigation.png" alt="Three navigation frames around a budget pivot.">
-            </div>
-            <figcaption>Navigation, t* = 21, budget.</figcaption>
-          </figure>
-          <figure class="figure figure-compact" data-view="panel" data-value="prim" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/panel_primitiveskill.png" alt="Three robot manipulation frames around a timeout pivot.">
-            </div>
-            <figcaption>PrimitiveSkill, t* = 4, timeout.</figcaption>
-          </figure>
-          <figure class="figure figure-compact" data-view="panel" data-value="svg" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/panel_svg.png" alt="Three SVG canvases around a timeout pivot.">
-            </div>
-            <figcaption>SVG, t* = 1, timeout.</figcaption>
-          </figure>
+          <div class="subsec">
+            <h3>Main Results</h3>
+            <p>On <strong>Qwen2.5-VL-3B</strong>, PIVOT reaches <strong>0.90 overall</strong> (+8% over SFT-GRPO, +13% over Vanilla-GRPO), surpassing GLANCE (0.86) and SDAR (0.79) with the largest lifts on Sokoban (+16%) and PrimitiveSkill (+6%). On <strong>Qwen3-VL-2B</strong> it reaches <strong>0.92</strong> (+12%), and on <strong>Qwen3.5-VL-2B</strong> it reaches <strong>0.91</strong> (+6% over SFT-GRPO, +26% over Vanilla-GRPO).</p>
 
-          <h3>Analyzer SFT examples</h3>
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <p>Stage I trains the Analyzer on failed rollouts: a visual collage, a compact action log, and a JSON target for pivot, mode, and skill. Only observable history is used. Splits are 90/10; the same recipe applies to the 2B backbone.</p>
+            <div class="metrics" aria-label="Headline results">
+              <div class="metric">
+                <strong>0.90</strong>
+                <span>Qwen2.5-VL-3B (+8% vs SFT-GRPO)</span>
+              </div>
+              <div class="metric">
+                <strong>+5%</strong>
+                <span>3B over GLANCE (0.86 to 0.90)</span>
+              </div>
+              <div class="metric">
+                <strong>0.92</strong>
+                <span>Qwen3-VL-2B (+12% vs SFT-GRPO)</span>
+              </div>
+              <div class="metric">
+                <strong>0.91</strong>
+                <span>Qwen3.5-VL-2B (+6% vs SFT-GRPO)</span>
+              </div>
             </div>
-            <div class="table-wrap ablation-inline">
-              <table class="ablation-table">
-                <caption>Analyzer SFT splits (3B packs; same recipe on 2B)</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Environment</th>
-                    <th scope="col">Accepted</th>
-                    <th scope="col">Train</th>
-                    <th scope="col">Val</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>Sokoban</td><td>1170</td><td>1053</td><td>117</td></tr>
-                  <tr><td>FrozenLake</td><td>1375</td><td>1237</td><td>138</td></tr>
-                  <tr><td>Navigation</td><td>959</td><td>863</td><td>96</td></tr>
-                  <tr><td>PrimitiveSkill</td><td>1677</td><td>1509</td><td>168</td></tr>
-                  <tr><td>SVG</td><td>1719</td><td>1547</td><td>172</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="seg" data-switch="sft" role="group" aria-label="Analyzer SFT collage examples">
-            <button type="button" data-value="sokoban" aria-pressed="true">Sokoban</button>
-            <button type="button" data-value="frozen" aria-pressed="false">FrozenLake</button>
-            <button type="button" data-value="nav" aria-pressed="false">Navigation</button>
-            <button type="button" data-value="prim" aria-pressed="false">PrimitiveSkill</button>
-            <button type="button" data-value="svg" aria-pressed="false">SVG</button>
-          </div>
-          <figure class="figure" data-view="sft" data-value="sokoban">
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/sokoban/collage_00.png" alt="Sokoban Analyzer SFT example: trajectory collage, action log, and JSON target.">
-            </div>
-            <figcaption>Sokoban. Collage and action log (left) with JSON supervision (right). Pivot line highlighted in the log.</figcaption>
-          </figure>
-          <figure class="figure" data-view="sft" data-value="frozen" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/frozenlake/collage_09.png" alt="FrozenLake Analyzer SFT example at t-star equals 6, timeout.">
-            </div>
-            <figcaption>FrozenLake, t* = 6, timeout. Same three-column layout as in the paper appendix.</figcaption>
-          </figure>
-          <figure class="figure" data-view="sft" data-value="nav" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/navigation/collage_03.png" alt="Navigation Analyzer SFT example at t-star equals 23, budget.">
-            </div>
-            <figcaption>Navigation, t* = 23, budget. Action log truncated around the pivot in denser traces.</figcaption>
-          </figure>
-          <figure class="figure" data-view="sft" data-value="prim" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/primitiveskill/collage_09.png" alt="PrimitiveSkill Analyzer SFT example at t-star equals 3, timeout.">
-            </div>
-            <figcaption>PrimitiveSkill, t* = 3, timeout. Collage, action log, and JSON target.</figcaption>
-          </figure>
-          <figure class="figure" data-view="sft" data-value="svg" hidden>
-            <div class="figure-frame">
-              <img src="figures/pivot_self_opd/svg/collage_06.png" alt="SVG Analyzer SFT example: fork-and-knife target, repeated wrong SVG, timeout at step 1.">
-            </div>
-            <figcaption>SVG, t* = 1, timeout. The same incorrect canvas is submitted twice instead of drawing the fork and knife.</figcaption>
-          </figure>
-        </section>
 
-        <section class="section" id="evidence">
-          <p class="section-kicker">04 · Results across five tasks</p>
-          <h2>From Sokoban to 3D control, PIVOT sets a new bar</h2>
-          <p class="lede">We evaluate on cognitive grids (Sokoban, FrozenLake), embodied 3D control (Navigation, PrimitiveSkill), and generative SVG. Full PIVOT is the M+P+R stack, and it ships with no extra test-time machinery.</p>
-          <div class="metrics" aria-label="Headline results">
-            <div class="metric">
-              <strong>+8%</strong>
-              <span>3B over SFT-GRPO, 0.83 to 0.90</span>
-            </div>
-            <div class="metric">
-              <strong>+5%</strong>
-              <span>3B over GLANCE-Full, 0.86 to 0.90</span>
-            </div>
-            <div class="metric">
-              <strong>+12%</strong>
-              <span>2B over SFT-GRPO, 0.82 to 0.92</span>
+            <div data-view="backbone" data-value="3b">
+              <div class="table-wrap">
+                <table class="paper-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="3">Method</th>
+                      <th colspan="2">Cognitive Grid Puzzles</th>
+                      <th colspan="8">Embodied 3D Control</th>
+                      <th colspan="3">Generative Reasoning</th>
+                      <th rowspan="3">All</th>
+                    </tr>
+                    <tr>
+                      <th rowspan="2">Sokoban</th>
+                      <th rowspan="2">Frozen<br>Lake</th>
+                      <th colspan="3">Navigation</th>
+                      <th colspan="5">PrimitiveSkill</th>
+                      <th colspan="3">SVG</th>
+                    </tr>
+                    <tr>
+                      <th>Base</th><th>Com.</th><th>Avg.</th>
+                      <th>Place</th><th>Stack</th><th>Draw.</th><th>Align</th><th>Avg.</th>
+                      <th>DINO</th><th>DS</th><th>Avg.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="group"><td colspan="15">Open-source VLMs</td></tr>
+                    <tr class="muted"><td>Qwen2.5-VL-72B</td><td>0.20</td><td>0.44</td><td>0.70</td><td>0.77</td><td>0.74</td><td>1.00</td><td>0.50</td><td>0.00</td><td>1.00</td><td>0.63</td><td>0.84</td><td>0.62</td><td>0.73</td><td>0.55</td></tr>
+                    <tr class="muted"><td>Qwen2.5-VL-7B</td><td>0.14</td><td>0.14</td><td>0.33</td><td>0.38</td><td>0.35</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.75</td><td>0.19</td><td>0.84</td><td>0.27</td><td>0.56</td><td>0.28</td></tr>
+                    <tr class="muted"><td>Qwen2.5-VL-3B</td><td>0.13</td><td>0.14</td><td>0.20</td><td>0.26</td><td>0.23</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.79</td><td>0.30</td><td>0.54</td><td>0.21</td></tr>
+                    <tr class="muted"><td>VLM-R1-3B</td><td>0.16</td><td>0.15</td><td>0.33</td><td>0.34</td><td>0.34</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.79</td><td>0.27</td><td>0.54</td><td>0.24</td></tr>
+                    <tr class="group"><td colspan="15">Proprietary VLMs</td></tr>
+                    <tr class="muted"><td>o4-mini</td><td>0.44</td><td>0.82</td><td>0.75</td><td>0.75</td><td>0.75</td><td>1.00</td><td>0.50</td><td>0.00</td><td>0.75</td><td>0.56</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.67</td></tr>
+                    <tr class="muted"><td>GPT-4o</td><td>0.43</td><td>0.54</td><td>0.75</td><td>0.69</td><td>0.72</td><td>0.50</td><td>0.63</td><td>0.00</td><td>0.88</td><td>0.50</td><td>0.91</td><td>0.69</td><td>0.80</td><td>0.60</td></tr>
+                    <tr class="muted"><td>Gemini 2.5 Pro</td><td>0.58</td><td>0.78</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.00</td><td>0.75</td><td>0.50</td><td>0.93</td><td>0.78</td><td>0.86</td><td>0.67</td></tr>
+                    <tr class="muted"><td>Claude 4.5 Sonnet</td><td>0.31</td><td>0.80</td><td>0.67</td><td>0.67</td><td>0.67</td><td>0.63</td><td>0.50</td><td>0.00</td><td>1.00</td><td>0.53</td><td>0.95</td><td>0.81</td><td>0.88</td><td>0.64</td></tr>
+                    <tr class="muted"><td>Claude 3.7 Sonnet</td><td>0.25</td><td>0.69</td><td>0.48</td><td>0.47</td><td>0.47</td><td>0.63</td><td>0.13</td><td>0.00</td><td>1.00</td><td>0.44</td><td>0.94</td><td>0.77</td><td>0.85</td><td>0.54</td></tr>
+                    <tr class="group"><td colspan="15">Previous SOTA with World Model Reasoning for Visual State Reconstruction (Qwen2.5-VL-3B-Instruct)</td></tr>
+                    <tr class="muted"><td>VAGEN</td><td>0.79</td><td>0.72</td><td>0.80</td><td>0.81</td><td>0.81</td><td>1.00</td><td>0.88</td><td>1.00</td><td>1.00</td><td>0.97</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.81</td></tr>
+                    <tr class="muted"><td>GLANCE</td><td>0.85</td><td>0.78</td><td>0.86</td><td>0.88</td><td>0.87</td><td>1.00</td><td>0.88</td><td>1.00</td><td>1.00</td><td>0.97</td><td>0.92</td><td>0.70</td><td>0.81</td><td>0.86</td></tr>
+                    <tr class="group"><td colspan="15">Reproduced OPD Baseline (Qwen2.5-VL-3B-Instruct)</td></tr>
+                    <tr class="muted"><td>SDAR</td><td>0.52</td><td>0.77</td><td>0.88</td><td>0.84</td><td>0.86</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.91</td><td>0.68</td><td>0.80</td><td>0.79</td></tr>
+                    <tr class="group"><td colspan="15">PIVOT (Qwen2.5-VL-3B-Instruct)</td></tr>
+                    <tr><td>Vanilla-GRPO</td><td>0.78</td><td>0.71</td><td>0.87</td><td>0.75</td><td>0.81</td><td>0.92</td><td>0.86</td><td>0.89</td><td>0.93</td><td>0.90</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.80</td></tr>
+                    <tr><td>SFT-GRPO</td><td>0.82</td><td>0.75</td><td>0.93</td><td>0.77</td><td>0.85</td><td>0.96</td><td>0.90</td><td>0.93</td><td>0.97</td><td>0.94</td><td>0.92</td><td>0.68</td><td>0.80</td><td>0.83</td></tr>
+                    <tr class="best"><td>PIVOT</td><td>0.95<span class="gain">+16%</span></td><td>0.84<span class="gain">+12%</span></td><td>0.97<span class="gain">+4%</span></td><td>0.83<span class="gain">+8%</span></td><td>0.90<span class="gain">+6%</span></td><td>1.00<span class="gain">+4%</span></td><td>1.00<span class="gain">+11%</span></td><td>1.00<span class="gain">+8%</span></td><td>1.00<span class="gain">+3%</span></td><td>1.00<span class="gain">+6%</span></td><td>0.93<span class="gain">+1%</span></td><td>0.71<span class="gain">+4%</span></td><td>0.82<span class="gain">+3%</span></td><td>0.90<span class="gain">+8%</span></td></tr>
+                    <tr class="group"><td colspan="15">PIVOT (Qwen3-VL-2B-Instruct)</td></tr>
+                    <tr><td>Vanilla-GRPO</td><td>0.77</td><td>0.89</td><td>0.97</td><td>0.73</td><td>0.85</td><td>0.80</td><td>0.67</td><td>0.78</td><td>0.79</td><td>0.76</td><td>0.90</td><td>0.68</td><td>0.79</td><td>0.81</td></tr>
+                    <tr><td>SFT-GRPO</td><td>0.80</td><td>0.87</td><td>0.92</td><td>0.74</td><td>0.83</td><td>0.83</td><td>0.80</td><td>0.81</td><td>0.84</td><td>0.82</td><td>0.91</td><td>0.67</td><td>0.79</td><td>0.82</td></tr>
+                    <tr class="best"><td>PIVOT</td><td>0.92<span class="gain">+15%</span></td><td>0.90<span class="gain">+3%</span></td><td>0.98<span class="gain">+7%</span></td><td>0.91<span class="gain">+23%</span></td><td>0.95<span class="gain">+14%</span></td><td>1.00<span class="gain">+20%</span></td><td>1.00<span class="gain">+25%</span></td><td>1.00<span class="gain">+23%</span></td><td>1.00<span class="gain">+19%</span></td><td>1.00<span class="gain">+22%</span></td><td>0.93<span class="gain">+2%</span></td><td>0.76<span class="gain">+13%</span></td><td>0.85<span class="gain">+8%</span></td><td>0.92<span class="gain">+12%</span></td></tr>
+                    <tr class="group"><td colspan="15">PIVOT (Qwen3.5-VL-2B)</td></tr>
+                    <tr><td>Vanilla-GRPO</td><td>0.56</td><td>0.92</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.97</td><td>0.19</td><td>1.00</td><td>0.81</td><td>0.74</td><td>0.91</td><td>0.63</td><td>0.77</td><td>0.72</td></tr>
+                    <tr><td>SFT-GRPO</td><td>0.75</td><td>0.93</td><td>0.91</td><td>0.86</td><td>0.88</td><td>0.94</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.98</td><td>0.91</td><td>0.61</td><td>0.76</td><td>0.86</td></tr>
+                    <tr class="best"><td>PIVOT</td><td>0.90<span class="gain">+20%</span></td><td>0.95<span class="gain">+2%</span></td><td>0.94<span class="gain">+3%</span></td><td>0.86<span class="gain">+0%</span></td><td>0.90<span class="gain">+2%</span></td><td>1.00<span class="gain">+6%</span></td><td>1.00<span class="gain">+0%</span></td><td>1.00<span class="gain">+0%</span></td><td>1.00<span class="gain">+0%</span></td><td>1.00<span class="gain">+2%</span></td><td>0.93<span class="gain">+2%</span></td><td>0.72<span class="gain">+18%</span></td><td>0.82<span class="gain">+8%</span></td><td>0.91<span class="gain">+6%</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="note">Main results across five VLM agentic benchmarks. Vanilla-GRPO and SFT-GRPO denote pure RL and GRPO initialized after Analyzer SFT; SDAR is our reproduced gated OPD baseline. Cyan percentages on PIVOT are relative gains over SFT-GRPO in the same backbone block; muted rows follow VAGEN and GLANCE.</p>
             </div>
           </div>
 
-          <div class="seg" data-switch="backbone" role="group" aria-label="Results and training curves">
-            <button type="button" data-value="3b" aria-pressed="true">Qwen2.5-VL-3B</button>
-            <button type="button" data-value="2b" aria-pressed="false">Qwen3-VL-2B</button>
-            <button type="button" data-value="curves-3b" aria-pressed="false">Curves · 3B</button>
-            <button type="button" data-value="curves-2b" aria-pressed="false">Curves · 2B</button>
-          </div>
+          <div class="subsec">
+            <h3>Ablations</h3>
+            <h4>Diagnostic Context Components</h4>
+            <p>Across both backbones, failure-mode text (M) provides a strong base, adding the localized visual panel (M+P) lifts planning and control (3B Sokoban 0.86 → 0.90, SVG 0.84; 2B Sokoban 0.82 → 0.97), and the full stack (M+P+R) is the most reliable default—best on four of five tasks for 3B (0.95 / 0.84 / 0.90 / 1.00) and best overall for 2B (0.92).</p>
 
-          <div data-view="backbone" data-value="3b">
+            <h4>Sensitivity to Pivot Localization</h4>
+            <p>Replacing predicted pivots with random step indices (M+P+Random+R) degrades every benchmark (0.75 Sokoban, 0.69 FrozenLake, 0.80 Navigation, 0.87 PrimitiveSkill, 0.74 SVG), confirming that unanchored visual context injects misleading supervision.</p>
+
             <div class="table-wrap">
               <table class="paper-table">
                 <thead>
                   <tr>
-                    <th rowspan="3">Method</th>
-                    <th colspan="2">Cognitive Grid</th>
-                    <th colspan="8">Embodied 3D Control</th>
-                    <th colspan="3">Generative</th>
-                    <th rowspan="3">All</th>
-                  </tr>
-                  <tr>
-                    <th rowspan="2">Sok.</th>
-                    <th rowspan="2">Frozen<br>Lake</th>
-                    <th colspan="3">Navigation</th>
-                    <th colspan="5">PrimitiveSkill</th>
-                    <th colspan="3">SVG</th>
-                  </tr>
-                  <tr>
-                    <th>Base</th><th>Com.</th><th>Avg.</th>
-                    <th>Place</th><th>Stack</th><th>Draw.</th><th>Align</th><th>Avg.</th>
-                    <th>DINO</th><th>DS</th><th>Avg.</th>
+                    <th>Variant</th>
+                    <th>Sok.</th>
+                    <th>FL</th>
+                    <th>Nav.</th>
+                    <th>PS</th>
+                    <th>SVG</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="group"><td colspan="15">Open-source VLMs</td></tr>
-                  <tr class="muted"><td>Qwen2.5-VL-72B</td><td>0.20</td><td>0.44</td><td>0.70</td><td>0.77</td><td>0.74</td><td>1.00</td><td>0.50</td><td>0.00</td><td>1.00</td><td>0.63</td><td>0.84</td><td>0.62</td><td>0.73</td><td>0.55</td></tr>
-                  <tr class="muted"><td>Qwen2.5-VL-7B</td><td>0.14</td><td>0.14</td><td>0.33</td><td>0.38</td><td>0.35</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.75</td><td>0.19</td><td>0.84</td><td>0.27</td><td>0.56</td><td>0.28</td></tr>
-                  <tr class="muted"><td>Qwen2.5-VL-3B</td><td>0.13</td><td>0.14</td><td>0.20</td><td>0.26</td><td>0.23</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.79</td><td>0.30</td><td>0.54</td><td>0.21</td></tr>
-                  <tr class="muted"><td>VLM-R1-3B</td><td>0.16</td><td>0.15</td><td>0.33</td><td>0.34</td><td>0.34</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.79</td><td>0.27</td><td>0.54</td><td>0.24</td></tr>
-                  <tr class="group"><td colspan="15">Proprietary VLMs</td></tr>
-                  <tr class="muted"><td>o4-mini</td><td>0.44</td><td>0.82</td><td>0.75</td><td>0.75</td><td>0.75</td><td>1.00</td><td>0.50</td><td>0.00</td><td>0.75</td><td>0.56</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.67</td></tr>
-                  <tr class="muted"><td>GPT-4o</td><td>0.43</td><td>0.54</td><td>0.75</td><td>0.69</td><td>0.72</td><td>0.50</td><td>0.63</td><td>0.00</td><td>0.88</td><td>0.50</td><td>0.91</td><td>0.69</td><td>0.80</td><td>0.60</td></tr>
-                  <tr class="muted"><td>Gemini 2.5 Pro</td><td>0.58</td><td>0.78</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.00</td><td>0.75</td><td>0.50</td><td>0.93</td><td>0.78</td><td>0.86</td><td>0.67</td></tr>
-                  <tr class="muted"><td>Claude 4.5 Sonnet</td><td>0.31</td><td>0.80</td><td>0.67</td><td>0.67</td><td>0.67</td><td>0.63</td><td>0.50</td><td>0.00</td><td>1.00</td><td>0.53</td><td>0.95</td><td>0.81</td><td>0.88</td><td>0.64</td></tr>
-                  <tr class="muted"><td>Claude 3.7 Sonnet</td><td>0.25</td><td>0.69</td><td>0.48</td><td>0.47</td><td>0.47</td><td>0.63</td><td>0.13</td><td>0.00</td><td>1.00</td><td>0.44</td><td>0.94</td><td>0.77</td><td>0.85</td><td>0.54</td></tr>
-                  <tr class="group"><td colspan="15">Previous SOTA / OPD baseline</td></tr>
-                  <tr class="muted"><td>VAGEN-Full</td><td>0.79</td><td>0.72</td><td>0.80</td><td>0.81</td><td>0.81</td><td>1.00</td><td>0.88</td><td>1.00</td><td>1.00</td><td>0.97</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.81</td></tr>
-                  <tr class="muted"><td>GLANCE-Full</td><td>0.85</td><td>0.78</td><td>0.86</td><td>0.88</td><td>0.87</td><td>1.00</td><td>0.88</td><td>1.00</td><td>1.00</td><td>0.97</td><td>0.92</td><td>0.70</td><td>0.81</td><td>0.86</td></tr>
-                  <tr class="muted"><td>SDAR</td><td>0.52</td><td>0.77</td><td>0.88</td><td>0.84</td><td>0.86</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.91</td><td>0.68</td><td>0.80</td><td>0.79</td></tr>
-                  <tr class="group"><td colspan="15">PIVOT (Qwen2.5-VL-3B-Instruct)</td></tr>
-                  <tr><td>Vanilla-GRPO</td><td>0.78</td><td>0.71</td><td>0.87</td><td>0.75</td><td>0.81</td><td>0.92</td><td>0.86</td><td>0.89</td><td>0.93</td><td>0.90</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.80</td></tr>
-                  <tr><td>SFT-GRPO</td><td>0.82</td><td>0.75</td><td>0.93</td><td>0.77</td><td>0.85</td><td>0.96</td><td>0.90</td><td>0.93</td><td>0.97</td><td>0.94</td><td>0.92</td><td>0.68</td><td>0.80</td><td>0.83</td></tr>
-                  <tr><td>M</td><td>0.86</td><td>0.83</td><td>0.94</td><td>0.78</td><td>0.86</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.93</td><td>0.73</td><td>0.83</td><td>0.88</td></tr>
-                  <tr><td>M+P</td><td>0.90</td><td>0.77</td><td>0.95</td><td>0.83</td><td>0.89</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.93</td><td>0.74</td><td>0.84</td><td>0.88</td></tr>
-                  <tr class="best"><td>M+P+R</td><td>0.95<span class="gain">+16%</span></td><td>0.84<span class="gain">+12%</span></td><td>0.97<span class="gain">+4%</span></td><td>0.83<span class="gain">+8%</span></td><td>0.90<span class="gain">+6%</span></td><td>1.00<span class="gain">+4%</span></td><td>1.00<span class="gain">+11%</span></td><td>1.00<span class="gain">+8%</span></td><td>1.00<span class="gain">+3%</span></td><td>1.00<span class="gain">+6%</span></td><td>0.93<span class="gain">+1%</span></td><td>0.71<span class="gain">+4%</span></td><td>0.82<span class="gain">+3%</span></td><td>0.90<span class="gain">+8%</span></td></tr>
+                  <tr class="group"><td colspan="6">Qwen2.5-VL-3B</td></tr>
+                  <tr><td>M</td><td>0.86</td><td>0.83</td><td>0.86</td><td>1.00</td><td>0.83</td></tr>
+                  <tr><td>M+P</td><td>0.90</td><td>0.77</td><td>0.89</td><td>1.00</td><td><strong>0.84</strong></td></tr>
+                  <tr><td>M+P+R</td><td><strong>0.95</strong></td><td><strong>0.84</strong></td><td><strong>0.90</strong></td><td><strong>1.00</strong></td><td>0.82</td></tr>
+                  <tr class="neg"><td>M+P+Random+R</td><td>0.75</td><td>0.69</td><td>0.80</td><td>0.87</td><td>0.74</td></tr>
+                  <tr class="group"><td colspan="6">Qwen3-VL-2B</td></tr>
+                  <tr><td>M</td><td>0.82</td><td>0.81</td><td>0.84</td><td>1.00</td><td>0.81</td></tr>
+                  <tr><td>M+P</td><td><strong>0.97</strong></td><td>0.89</td><td>0.89</td><td>1.00</td><td>0.82</td></tr>
+                  <tr><td>M+P+R</td><td>0.92</td><td><strong>0.90</strong></td><td><strong>0.95</strong></td><td><strong>1.00</strong></td><td><strong>0.85</strong></td></tr>
                 </tbody>
               </table>
             </div>
-            <p class="note">Cyan deltas are gains of M+P+R over SFT-GRPO. Enriching Teacher context from M to M+P to M+P+R lifts overall accuracy to 0.90 (+8% over SFT-GRPO, +5% over GLANCE-Full).</p>
+            <p class="note">Hindsight context ablation. M denotes failure mode, P the localized 3-panel visual crop, and R the guidance skill. Bold marks the best cell within each backbone.</p>
           </div>
 
-          <div data-view="backbone" data-value="2b" hidden>
-            <div class="table-wrap">
-              <table class="paper-table">
-                <thead>
-                  <tr>
-                    <th rowspan="3">Method</th>
-                    <th colspan="2">Cognitive Grid</th>
-                    <th colspan="8">Embodied 3D Control</th>
-                    <th colspan="3">Generative</th>
-                    <th rowspan="3">All</th>
-                  </tr>
-                  <tr>
-                    <th rowspan="2">Sok.</th>
-                    <th rowspan="2">Frozen<br>Lake</th>
-                    <th colspan="3">Navigation</th>
-                    <th colspan="5">PrimitiveSkill</th>
-                    <th colspan="3">SVG</th>
-                  </tr>
-                  <tr>
-                    <th>Base</th><th>Com.</th><th>Avg.</th>
-                    <th>Place</th><th>Stack</th><th>Draw.</th><th>Align</th><th>Avg.</th>
-                    <th>DINO</th><th>DS</th><th>Avg.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="group"><td colspan="15">Open-source VLMs</td></tr>
-                  <tr class="muted"><td>Qwen2.5-VL-72B</td><td>0.20</td><td>0.44</td><td>0.70</td><td>0.77</td><td>0.74</td><td>1.00</td><td>0.50</td><td>0.00</td><td>1.00</td><td>0.63</td><td>0.84</td><td>0.62</td><td>0.73</td><td>0.55</td></tr>
-                  <tr class="muted"><td>Qwen2.5-VL-7B</td><td>0.14</td><td>0.14</td><td>0.33</td><td>0.38</td><td>0.35</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.75</td><td>0.19</td><td>0.84</td><td>0.27</td><td>0.56</td><td>0.28</td></tr>
-                  <tr class="muted"><td>Qwen2.5-VL-3B</td><td>0.13</td><td>0.14</td><td>0.20</td><td>0.26</td><td>0.23</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.79</td><td>0.30</td><td>0.54</td><td>0.21</td></tr>
-                  <tr class="muted"><td>VLM-R1-3B</td><td>0.16</td><td>0.15</td><td>0.33</td><td>0.34</td><td>0.34</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.79</td><td>0.27</td><td>0.54</td><td>0.24</td></tr>
-                  <tr class="group"><td colspan="15">Proprietary VLMs</td></tr>
-                  <tr class="muted"><td>o4-mini</td><td>0.44</td><td>0.82</td><td>0.75</td><td>0.75</td><td>0.75</td><td>1.00</td><td>0.50</td><td>0.00</td><td>0.75</td><td>0.56</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.67</td></tr>
-                  <tr class="muted"><td>GPT-4o</td><td>0.43</td><td>0.54</td><td>0.75</td><td>0.69</td><td>0.72</td><td>0.50</td><td>0.63</td><td>0.00</td><td>0.88</td><td>0.50</td><td>0.91</td><td>0.69</td><td>0.80</td><td>0.60</td></tr>
-                  <tr class="muted"><td>Gemini 2.5 Pro</td><td>0.58</td><td>0.78</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.63</td><td>0.00</td><td>0.75</td><td>0.50</td><td>0.93</td><td>0.78</td><td>0.86</td><td>0.67</td></tr>
-                  <tr class="muted"><td>Claude 4.5 Sonnet</td><td>0.31</td><td>0.80</td><td>0.67</td><td>0.67</td><td>0.67</td><td>0.63</td><td>0.50</td><td>0.00</td><td>1.00</td><td>0.53</td><td>0.95</td><td>0.81</td><td>0.88</td><td>0.64</td></tr>
-                  <tr class="muted"><td>Claude 3.7 Sonnet</td><td>0.25</td><td>0.69</td><td>0.48</td><td>0.47</td><td>0.47</td><td>0.63</td><td>0.13</td><td>0.00</td><td>1.00</td><td>0.44</td><td>0.94</td><td>0.77</td><td>0.85</td><td>0.54</td></tr>
-                  <tr class="group"><td colspan="15">Previous SOTA / OPD baseline</td></tr>
-                  <tr class="muted"><td>VAGEN-Full</td><td>0.79</td><td>0.72</td><td>0.80</td><td>0.81</td><td>0.81</td><td>1.00</td><td>0.88</td><td>1.00</td><td>1.00</td><td>0.97</td><td>0.90</td><td>0.66</td><td>0.78</td><td>0.81</td></tr>
-                  <tr class="muted"><td>GLANCE-Full</td><td>0.85</td><td>0.78</td><td>0.86</td><td>0.88</td><td>0.87</td><td>1.00</td><td>0.88</td><td>1.00</td><td>1.00</td><td>0.97</td><td>0.92</td><td>0.70</td><td>0.81</td><td>0.86</td></tr>
-                  <tr class="muted"><td>SDAR</td><td>0.52</td><td>0.77</td><td>0.88</td><td>0.84</td><td>0.86</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.91</td><td>0.68</td><td>0.80</td><td>0.79</td></tr>
-                  <tr class="group"><td colspan="15">PIVOT (Qwen3-VL-2B-Instruct)</td></tr>
-                  <tr><td>Vanilla-GRPO</td><td>0.77</td><td>0.89</td><td>0.97</td><td>0.73</td><td>0.85</td><td>0.77</td><td>0.77</td><td>0.77</td><td>0.77</td><td>0.77</td><td>0.90</td><td>0.68</td><td>0.79</td><td>0.81</td></tr>
-                  <tr><td>SFT-GRPO</td><td>0.80</td><td>0.87</td><td>0.92</td><td>0.74</td><td>0.83</td><td>0.83</td><td>0.80</td><td>0.81</td><td>0.84</td><td>0.82</td><td>0.91</td><td>0.67</td><td>0.79</td><td>0.82</td></tr>
-                  <tr><td>M</td><td>0.82</td><td>0.81</td><td>0.93</td><td>0.75</td><td>0.84</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.92</td><td>0.70</td><td>0.81</td><td>0.86</td></tr>
-                  <tr><td>M+P</td><td>0.97</td><td>0.89</td><td>0.97</td><td>0.80</td><td>0.89</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>0.93</td><td>0.71</td><td>0.82</td><td>0.91</td></tr>
-                  <tr class="best"><td>M+P+R</td><td>0.92<span class="gain">+15%</span></td><td>0.90<span class="gain">+3%</span></td><td>0.98<span class="gain">+7%</span></td><td>0.91<span class="gain">+23%</span></td><td>0.95<span class="gain">+14%</span></td><td>1.00<span class="gain">+20%</span></td><td>1.00<span class="gain">+25%</span></td><td>1.00<span class="gain">+23%</span></td><td>1.00<span class="gain">+19%</span></td><td>1.00<span class="gain">+22%</span></td><td>0.93<span class="gain">+2%</span></td><td>0.76<span class="gain">+13%</span></td><td>0.85<span class="gain">+8%</span></td><td>0.92<span class="gain">+12%</span></td></tr>
-                </tbody>
-              </table>
+          <div class="subsec">
+            <h3>Training Dynamics and Efficiency</h3>
+            <div class="analysis-grid" role="list">
+              <article class="analysis-card" role="listitem">
+                <figure class="figure analysis-figure">
+                  <div class="figure-frame">
+                    <img src="figures/fig_frozenlake_pivot_acc.png?v=14" alt="FrozenLake pivot accuracy. The 15-step moving average rises from about 0.56 to near 0.95.">
+                  </div>
+                  <figcaption>FrozenLake pivot accuracy (gray: per-step; blue: 15-step moving average).</figcaption>
+                </figure>
+                <div class="analysis-copy">
+                  <h4>Self-Evolving Pivot Localization</h4>
+                  <p>Checked against FrozenLake’s shortest-path solver during RL, 15-step moving Analyzer accuracy (t̂ = <em>t*</em>) rises from ~0.56 to 0.90 by step 100 and holds near 0.95—forming a self-evolving loop that sharpens credit over training.</p>
+                </div>
+              </article>
+              <article class="analysis-card" role="listitem">
+                <figure class="figure analysis-figure">
+                  <div class="figure-frame">
+                    <img src="figures/fig_episode_length.png?v=14" alt="Sokoban episode length over 250 RL updates. PIVOT drops below 4 turns faster than Vanilla-GRPO.">
+                  </div>
+                  <figcaption>Sokoban episode length over 250 RL updates.</figcaption>
+                </figure>
+                <div class="analysis-copy">
+                  <h4>Trajectory Compression and Decision Efficiency</h4>
+                  <p>On Sokoban, both policies start near 8 turns. PIVOT drops below 4 turns within 120 updates and averages 3.4 turns over the final 50 steps versus 4.6 for Vanilla-GRPO, cutting deadlocks and redundant wandering.</p>
+                </div>
+              </article>
+              <article class="analysis-card" role="listitem">
+                <figure class="figure analysis-figure">
+                  <div class="figure-frame">
+                    <img src="figures/fig_efficiency.png?v=14" alt="Sokoban wall-clock training time: Vanilla-GRPO 7.1 hours, PIVOT 6.8 hours including 11 minutes of Analyzer SFT.">
+                  </div>
+                  <figcaption>Sokoban wall-clock time (gold cap: 11-minute Analyzer SFT).</figcaption>
+                </figure>
+                <div class="analysis-copy">
+                  <h4>End-to-End Training and Inference Efficiency</h4>
+                  <p>Shorter rollouts cut Sokoban step time from 102s to 95s. Including the 11-minute SFT warm-up, PIVOT finishes in 6.8h versus 7.1h for Vanilla-GRPO, and deploys with zero extra latency or prompt overhead.</p>
+                </div>
+              </article>
             </div>
-            <p class="note">Same baselines; PIVOT rows use Qwen3-VL-2B. Privileged context scales from M (0.86) to M+P (0.91) to M+P+R (0.92, +12% over SFT-GRPO). Sokoban peaks at M+P (0.97).</p>
-          </div>
-
-          <div data-view="backbone" data-value="curves-3b" hidden>
-            <figure class="figure">
-              <div class="figure-frame">
-                <img src="figures/fig_ablation_curves.png" alt="Training curves on five tasks for Qwen2.5-VL-3B: vanilla GRPO and three PIVOT context variants.">
-              </div>
-              <figcaption>Qwen2.5-VL-3B Stage II validation curves. Dashed is Vanilla-GRPO. Color is Teacher context: M, M+P, and M+P+R.</figcaption>
-            </figure>
-          </div>
-
-          <div data-view="backbone" data-value="curves-2b" hidden>
-            <figure class="figure">
-              <div class="figure-frame">
-                <img src="figures/fig_ablation_curves_2b.png" alt="Training curves on five tasks for Qwen3-VL-2B: vanilla GRPO and three PIVOT context variants.">
-              </div>
-              <figcaption>Qwen3-VL-2B Stage II validation curves. Same arms: Vanilla-GRPO, M, M+P, and M+P+R.</figcaption>
-            </figure>
-          </div>
-
-          <h3>Ablation: localization is not optional</h3>
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <p>A panel alone or a failure mode alone already helps. Combining them raises Sokoban / Navigation to about 0.90 / 0.89, and full M+P+R peaks at 0.95 / 0.90.</p>
-              <p>Replace the localized step with a random index (M+P-Random+R) and scores fall to 0.75 / 0.80, below Vanilla-GRPO. Coarse context is noise. Precise pivot localization is the ingredient that matters.</p>
-            </div>
-            <div class="ablation-card">
-              <table class="ablation-table">
-                <caption>Pivot-step ablation</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Variant</th>
-                    <th scope="col">Sok.</th>
-                    <th scope="col">Nav.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Vanilla-GRPO</td>
-                    <td>0.78</td>
-                    <td>0.81</td>
-                  </tr>
-                  <tr>
-                    <td>P</td>
-                    <td>0.86</td>
-                    <td>0.85</td>
-                  </tr>
-                  <tr>
-                    <td>M</td>
-                    <td>0.86</td>
-                    <td>0.86</td>
-                  </tr>
-                  <tr>
-                    <td>M+P</td>
-                    <td>0.90</td>
-                    <td>0.89</td>
-                  </tr>
-                  <tr class="best">
-                    <td>M+P+R</td>
-                    <td><strong>0.95</strong></td>
-                    <td><strong>0.90</strong></td>
-                  </tr>
-                  <tr class="neg">
-                    <td>M+P-Random+R</td>
-                    <td>0.75</td>
-                    <td>0.80</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <h3>Training gets cleaner, not slower</h3>
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <h4>Self-evolving pivot localization</h4>
-              <p>On FrozenLake we can check Analyzer accuracy against a shortest-path oracle. Under M+P+R it climbs from about 0.56 toward 0.95 as training proceeds. Better localization feeds better credit, without a separate diagnostic model.</p>
-            </div>
-            <figure class="figure analysis-figure">
-              <div class="figure-frame">
-                <img src="figures/fig_frozenlake_pivot_acc.png" alt="FrozenLake pivot accuracy rising from about 0.56 toward 0.95 over RL training.">
-              </div>
-              <figcaption>FrozenLake <em>t̂</em> accuracy. Gray is each step; green is a 15-step average.</figcaption>
-            </figure>
-          </div>
-          <div class="analysis-row">
-            <div class="analysis-copy">
-              <h4>Training efficiency</h4>
-              <p>PIVOT kills bad actions earlier, so failed rollouts shorten. On Sokoban each RL step takes 95s versus 102s for Vanilla-GRPO, and far below a frozen 8B teacher at 373s. At test time the diagnostic branches are gone, so there is no parameter or latency tax.</p>
-            </div>
-            <figure class="figure analysis-figure">
-              <div class="figure-frame">
-                <img src="figures/fig_efficiency.png" alt="Bar chart of seconds per RL step: vanilla GRPO 102s, PIVOT 95s, frozen 8B teacher 373s.">
-              </div>
-              <figcaption>Time per RL step (s) on Sokoban.</figcaption>
-            </figure>
           </div>
         </section>
       </article>
     </div>
 
-    <section class="close" id="sentence">
-      <p class="section-kicker">05 · Findings, solution, outlook</p>
-      <h2>What stalls GRPO, what PIVOT fixes, and where this goes next</h2>
+    <section class="close" id="conclusion">
+      <p class="section-kicker">Conclusion</p>
+      <h2>Resolving the Pivot Credit Assignment Dilemma</h2>
       <div class="closing-grid" role="list">
         <article class="closing-card" role="listitem">
-          <p class="closing-kicker">Key findings</p>
-          <h3>Where GRPO stalls, and what hindsight really buys</h3>
-          <p>GRPO stalls in multi-turn visual tasks when a single-step error causes full-trajectory failure and gradient collapse. Hindsight distillation such as OPD/OPSD relies mainly on physical environment rollbacks at the exact pivot turn <em>t*</em>, while text hints add little.</p>
+          <p class="closing-kicker">Empirical Diagnosis</p>
+          <h3>Pivot Credit Assignment Dilemma</h3>
+          <p>Local suffix rollback requires exact timing at <em>t*</em> (with local text adding little) but costly resets; full-horizon restarts avoid resets and benefit from pivot diagnostics yet dilute prefix credit.</p>
         </article>
         <article class="closing-card" role="listitem">
-          <p class="closing-kicker">Proposed solution · PIVOT</p>
-          <h3>Bake hindsight into the weights</h3>
-          <p>To break the rollback paradox, PIVOT puts hindsight into model weights rather than inference prompts. One VLM acts as Analyzer (locating the pivot), Teacher (distilling visual feedback), and Student in training, then deploys as a standalone Student with zero test-time overhead, lifting Qwen2.5-VL-3B to <strong>0.90 (+8%)</strong>.</p>
+          <p class="closing-kicker">PIVOT Framework</p>
+          <h3>Unified Three-Role Self-Distillation</h3>
+          <p>One policy π<sub>θ</sub> acts as Analyzer, detached Teacher, and Student to distill 3-panel visual hindsight onto failed tokens—eliminating both training rollbacks and test-time overhead.</p>
         </article>
         <article class="closing-card" role="listitem">
-          <p class="closing-kicker">Future outlook</p>
-          <h3>Unsupervised pivot sensing</h3>
-          <p>Replacing heuristic pivot labeling with unsupervised sensing via token entropy or self-play can drop simulator-rewind dependencies and open scalable post-training for open-world agents.</p>
+          <p class="closing-kicker">Performance &amp; Efficiency</p>
+          <h3>Self-Evolving Accuracy at Lower Cost</h3>
+          <p>Reaches <strong>0.90</strong> on Qwen2.5-VL-3B (+8%, beating GLANCE 0.86), <strong>0.92</strong> on Qwen3-VL-2B (+12%), and <strong>0.91</strong> on Qwen3.5-VL-2B (+6%), with self-evolving pivot accuracy (0.56 → 0.95) and faster training (6.8h vs. 7.1h).</p>
         </article>
       </div>
     </section>
@@ -710,20 +657,20 @@
         <p>Cite this work</p>
         <button class="copy" type="button" data-copy="#bibtex">Copy</button>
       </div>
-      <pre id="bibtex"><code>@misc{zhou2026pivotpivotawarepolicyself,
-      title={PIVOT: Pivot-Aware On Policy Self Distillation for Multi-Turn VLM Agents}, 
+      <pre id="bibtex"><code>@misc{zhou2026pivot,
+      title={PIVOT: On-Policy Self-Distillation via Pivot-Grounded Visual Hindsight for Multi-Turn VLM Agents},
       author={Jiazhou Zhou and Hu Zhou and Yucheng Chen and Jinyuan Qu and Ying-Cong Chen and Lei Zhang},
       year={2026},
       eprint={2609.35303},
       archivePrefix={arXiv},
       primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2609.35303}, 
+      url={https://arxiv.org/abs/2609.35303},
 }</code></pre>
     </section>
   </main>
 
   <footer class="site-footer">
-    <span>PIVOT · Pivot-Aware Internalized Visual On-Policy Training</span>
+    <span>PIVOT · On-Policy Self-Distillation via Pivot-Grounded Visual Hindsight</span>
     <a href="#top">Back to top</a>
   </footer>
   <script src="script.js?v=11"></script>
